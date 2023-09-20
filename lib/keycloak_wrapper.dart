@@ -1,7 +1,9 @@
 library keycloak_wrapper;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+import 'package:flutter/material.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
+
+part 'src/keycloak_config.dart';
+part 'src/keycloak_token.dart';
+part 'src/keycloak_user.dart';
+part 'src/keycloak_wrapper.dart';
