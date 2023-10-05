@@ -1,6 +1,9 @@
 name: keycloak_wrapper
-description: A new Flutter package project.
+
+description: Keycloak client adapter for Flutter.
+
 version: 0.0.1
+
 homepage:
 
 environment:
@@ -10,6 +13,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_appauth: ^6.0.2
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:
