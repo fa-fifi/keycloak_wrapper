@@ -4,7 +4,7 @@ description: Keycloak client adapter for Flutter.
 
 version: 0.0.1
 
-homepage:
+homepage: https://github.com/fa-fifi/keycloak-wrapper
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
