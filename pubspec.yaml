@@ -1,6 +1,6 @@
 name: keycloak_wrapper
 
-description: Keycloak client adapter for Flutter.
+description: Keycloak Single Sign-on (SSO) authentication package for Flutter framework.
 
 version: 0.0.1
 
