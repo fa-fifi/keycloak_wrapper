@@ -1,7 +1,7 @@
 part of keycloak_wrapper;
 
 extension TokenResponseHelper on TokenResponse? {
-  // Checks the validation of the token.
+  // Checks the validation of the token response.
   bool get isValid =>
       this == null ? false : this?.accessToken != null && this?.idToken != null;
 }

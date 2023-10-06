@@ -5,12 +5,11 @@ class KeycloakWrapper {
 
   static KeycloakWrapper? _instance = KeycloakWrapper._();
 
-  // Lazy loading singleton factory constructor.
   factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
 
   late final _streamController = StreamController<bool>();
 
-  /// Stream of the user authentication states. Returns true if login is successful.
+  /// Stream of the user authentication state. Returns true if login is successful.
   Stream<bool> get authenticationStream => _streamController.stream;
 
   /// Details from making a successful token exchange.
@@ -30,7 +29,7 @@ class KeycloakWrapper {
   Map<String, dynamic>? get refreshToken =>
       jwtDecode(tokenResponse?.refreshToken);
 
-  /// Initializes Keycloak local configuration.
+  /// Initializes the user authentication state.
   Future<void> initialize() async {
     try {
       final securedRefreshToken =
@@ -44,7 +43,7 @@ class KeycloakWrapper {
 
         tokenResponse = await _appAuth.token(TokenRequest(
             KeycloakConfig.instance.clientId,
-            KeycloakConfig.instance.redirectUrl,
+            KeycloakConfig.instance.redirectUri,
             issuer: KeycloakConfig.instance.issuer,
             refreshToken: securedRefreshToken,
             allowInsecureConnections: true));
@@ -67,7 +66,7 @@ class KeycloakWrapper {
   Future<void> login(KeycloakConfig config) async {
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
-          AuthorizationTokenRequest(config.clientId, config.redirectUrl,
+          AuthorizationTokenRequest(config.clientId, config.redirectUri,
               issuer: config.issuer,
               scopes: ['openid', 'profile', 'email', 'offline_access'],
               promptValues: ['login'],
@@ -95,7 +94,7 @@ class KeycloakWrapper {
       final request = EndSessionRequest(
           idTokenHint: tokenResponse?.idToken,
           issuer: KeycloakConfig.instance.issuer,
-          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUrl);
+          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri);
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
@@ -107,7 +106,7 @@ class KeycloakWrapper {
     }
   }
 
-  /// Returns current user information retrieved from the Keycloak server.
+  /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {
       final url = Uri.parse(
