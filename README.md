@@ -1,7 +1,9 @@
+🚧 Readme.md is under maintenance. 🚧
+
 # Keycloak Wrapper
 [![pub package](https://img.shields.io/pub/v/keycloak_wrapper.svg)](https://pub.dartlang.org/packages/keycloak_wrapper)
 
-<br/><img src="https://github.com/fa-fifi/keycloak-wrapper/raw/master/assets/keycloak.png" alt="cover image"/><br/>
+<br/><a href="https://www.keycloak.org"><img src="https://github.com/fa-fifi/keycloak-wrapper/raw/master/assets/keycloak.png" alt="cover image" url="https://www.keycloak.org"/></a><br/>
 
 Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this package. Tokens are automatically managed in the background, and when needed, you can easily access them without writing any extra code. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
 
@@ -14,6 +16,7 @@ Using Appauth sdk to connect and secure storage to store tokens. -->
 - **AndroidX** is required for this package. Starting from Flutter v1.12.13, newly created projects already enable AndroidX by default. In case your project was created prior to this Flutter version, please migrate it before using this package. You can follow this migration [guide](https://docs.flutter.dev/release/breaking-changes/androidx-migration) provided by the Flutter team.
 
 ## 🕹️ Platform Configuration
+Below are the configurations for each supported platform.
 
 ### Android Setup
 Go to the `build.gradle` file for your Android app to specify the custom scheme so that there should be a section in it that look similar to the following but replace `<your_custom_scheme>` with the desired value.
