@@ -15,7 +15,7 @@ class KeycloakWrapper {
   /// Details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
-  /// Called whenever an error gets caught.
+  /// Called whenever an error gets caught. By default, all errors will be printed into the console.
   void Function(Object e, StackTrace s) onError = (e, s) => debugPrint('$e');
 
   /// Returns the payload of the id token.
@@ -29,7 +29,7 @@ class KeycloakWrapper {
   Map<String, dynamic>? get refreshToken =>
       jwtDecode(tokenResponse?.refreshToken);
 
-  /// Initializes the user authentication state.
+  /// Initializes the user authentication state and refresh token.
   Future<void> initialize() async {
     try {
       final securedRefreshToken =

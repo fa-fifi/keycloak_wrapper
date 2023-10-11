@@ -36,8 +36,10 @@ class KeycloakConfig {
   /// The realm name.
   String get realm => _realm ?? '';
 
+  /// The base URI for the authorization server.
   String get issuer => 'http://$domain/realms/$realm';
 
+  /// The callback URI after the user has been successfully authorized and granted an access token.
   String get redirectUri => '$_bundleIdentifier://login-callback';
 
   /// The application unique identifier.
