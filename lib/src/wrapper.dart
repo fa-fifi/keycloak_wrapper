@@ -62,8 +62,8 @@ class KeycloakWrapper {
     }
   }
 
-  /// Logs the user in.
-  Future<void> login(KeycloakConfig config) async {
+  /// Logs the user in. Returns true if login is successful.
+  Future<bool> login(KeycloakConfig config) async {
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
           AuthorizationTokenRequest(config.clientId, config.redirectUri,
@@ -82,14 +82,16 @@ class KeycloakWrapper {
       }
 
       _streamController.add(tokenResponse.isValid);
+      return tokenResponse.isValid;
     } catch (e, s) {
       debugPrint('An error occured during logging user in.');
       onError(e, s);
+      return false;
     }
   }
 
-  /// Logs the user out.
-  Future<void> logout() async {
+  /// Logs the user out. Returns true if logout is successful.
+  Future<bool> logout() async {
     try {
       final request = EndSessionRequest(
           idTokenHint: tokenResponse?.idToken,
@@ -100,9 +102,11 @@ class KeycloakWrapper {
       await _secureStorage.deleteAll();
 
       _streamController.add(false);
+      return true;
     } catch (e, s) {
       debugPrint('An error occured during logging user out.');
       onError(e, s);
+      return false;
     }
   }
 
