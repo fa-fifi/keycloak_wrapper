@@ -6,12 +6,18 @@ final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize the plugin at the start of your app.
   await keycloakWrapper.initialize();
+  // Listen to the errors caught by the plugin.
   keycloakWrapper.onError = (e, s) {
-    // Display the error inside a snackbar.
+    // Display the error message inside a snackbar.
     scaffoldMessengerKey.currentState
       ?..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('$e')));
+      ..showSnackBar(
+        SnackBar(
+          content: Text('$e'),
+        ),
+      );
   };
   runApp(const MyApp());
 }
@@ -24,10 +30,11 @@ class MyApp extends StatelessWidget {
         scaffoldMessengerKey: scaffoldMessengerKey,
         // Listen to the user authentication stream.
         home: StreamBuilder<bool>(
-            initialData: false,
-            stream: keycloakWrapper.authenticationStream,
-            builder: (context, snapshot) =>
-                snapshot.data! ? const HomeScreen() : const LoginScreen()),
+          initialData: false,
+          stream: keycloakWrapper.authenticationStream,
+          builder: (context, snapshot) =>
+              snapshot.data! ? const HomeScreen() : const LoginScreen(),
+        ),
       );
 }
 
@@ -35,34 +42,48 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   // Logs user in using given configuration.
-  Future<void> login() {
+  Future<bool> login() async {
     final config = KeycloakConfig(
         bundleIdentifier: '<bundle_identifier>',
         clientId: '<client_id>',
         domain: '<domain>',
         realm: '<realm>');
 
-    return keycloakWrapper.login(config);
+    // Check if user has successfully logged in.
+    final isLoggedIn = await keycloakWrapper.login(config);
+
+    return isLoggedIn;
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Center(
-            child: TextButton(onPressed: login, child: const Text('Login'))),
+          child: TextButton(
+            onPressed: login,
+            child: const Text('Login'),
+          ),
+        ),
       );
 }
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  // Logs user out from current realm.
-  Future<void> logout() {
-    return keycloakWrapper.logout();
+  // Logs user out from the current realm.
+  Future<bool> logout() async {
+    // Check if user has successfully logged out.
+    final isLoggedOut = await keycloakWrapper.logout();
+
+    return isLoggedOut;
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Center(
-            child: TextButton(onPressed: logout, child: const Text('Logout'))),
+          child: TextButton(
+            onPressed: logout,
+            child: const Text('Logout'),
+          ),
+        ),
       );
 }
