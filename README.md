@@ -70,7 +70,7 @@ Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so th
 ```
 
 ## 🚀 Plugin Usage
-Create an instance of the plugin somewhere inside your code, like below.
+Use it directly or create an instance of the plugin somewhere inside your code, like below.
 
 ```dart
 final keycloakWrapper = KeycloakWrapper();
@@ -87,7 +87,7 @@ void main() async {
 }
 ```
 
-To listen to the user authentication stream, you can create a StreamBuilder widget that listens to the `keycloakWrapper.authenticationStream` and navigates the user to the login screen when the stream returns false and redirects the user to the home screen when the login is successful. Set the initial value of the StreamBuilder widget to `false` to make sure the stream will never return null.
+To listen to the user authentication stream, create a StreamBuilder widget that listens to the `keycloakWrapper.authenticationStream` and navigates the user to the login screen when the stream returns false and redirects the user to the home screen when the login is successful. Set the initial value of the StreamBuilder widget to `false` to make sure the stream will never return null.
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -107,22 +107,22 @@ class MyApp extends StatelessWidget {
 Afterwards, create a button somewhere inside your login screen and use the following method to initiate the login process. Make sure to replace all the placeholders with your own values.
 
 ```dart
-Future<void> login() {
+Future<void> login() async {
     final config = KeycloakConfig(
         bundleIdentifier: '<bundle_identifier>',
         clientId: '<client_id>',
         domain: '<domain>',
         realm: '<realm>');
 
-    return keycloakWrapper.login(config);
+    await keycloakWrapper.login(config);
   }
 ```
 
-For logout, just this simple method will do.
+For logout, just this simple method will do. Make sure you pop off all stacked screens, if there are any.
 
 ```dart
-Future<void> logout() {
-    return keycloakWrapper.logout();
+Future<void> logout() async {
+    await keycloakWrapper.logout();
   }
 ```
 
@@ -135,3 +135,6 @@ keycloakWrapper.onError = (e, s) {
 ```
 
 You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this plugin works inside a real-life app.
+
+## ✨ Available APIs
+To be filled in the next update.
