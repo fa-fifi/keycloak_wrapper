@@ -41,24 +41,41 @@ class KeycloakWrapper {
       } else {
         await KeycloakConfig.instance.initialize();
 
-        tokenResponse = await _appAuth.token(TokenRequest(
-            KeycloakConfig.instance.clientId,
-            KeycloakConfig.instance.redirectUri,
-            issuer: KeycloakConfig.instance.issuer,
-            refreshToken: securedRefreshToken,
-            allowInsecureConnections: true));
+        final host = Uri.parse(KeycloakConfig.instance.issuer).host;
+        final isConnected = await hasNetwork(host);
 
-        await _secureStorage.write(
-            key: _refreshTokenKey, value: tokenResponse?.refreshToken);
+        if (isConnected) {
+          tokenResponse = await _appAuth.token(TokenRequest(
+              KeycloakConfig.instance.clientId,
+              KeycloakConfig.instance.redirectUri,
+              issuer: KeycloakConfig.instance.issuer,
+              refreshToken: securedRefreshToken,
+              allowInsecureConnections: true));
 
-        debugPrint(
-            '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.');
+          await _secureStorage.write(
+              key: _refreshTokenKey, value: tokenResponse?.refreshToken);
 
-        _streamController.add(tokenResponse.isValid);
+          debugPrint(
+              '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.');
+
+          _streamController.add(tokenResponse.isValid);
+        } else {
+          _streamController.add(true);
+        }
       }
     } catch (e, s) {
       debugPrint('An error occured during initialization.');
       onError(e, s);
+    }
+  }
+
+  /// Checks if there is network connectivity.
+  Future<bool> hasNetwork([String host = 'google.com']) async {
+    try {
+      final result = await InternetAddress.lookup(host);
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException {
+      return false;
     }
   }
 
