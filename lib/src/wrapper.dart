@@ -41,8 +41,7 @@ class KeycloakWrapper {
       } else {
         await KeycloakConfig.instance.initialize();
 
-        final host = Uri.parse(KeycloakConfig.instance.issuer).host;
-        final isConnected = await hasNetwork(host);
+        final isConnected = await hasNetwork();
 
         if (isConnected) {
           tokenResponse = await _appAuth.token(TokenRequest(
@@ -70,9 +69,9 @@ class KeycloakWrapper {
   }
 
   /// Checks if there is network connectivity.
-  Future<bool> hasNetwork([String host = 'google.com']) async {
+  Future<bool> hasNetwork() async {
     try {
-      final result = await InternetAddress.lookup(host);
+      final result = await InternetAddress.lookup('google.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } on SocketException {
       return false;
