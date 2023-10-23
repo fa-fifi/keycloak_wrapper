@@ -1,6 +1,10 @@
+## 0.2.2
+
+* Refactor all token retrieval methods.
+
 ## 0.2.1
 
-* Update hasNetwork() method.
+* Update network connectivity checker method.
 
 ## 0.2.0
 
