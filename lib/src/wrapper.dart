@@ -131,20 +131,27 @@ class KeycloakWrapper {
     }
   }
 
+  /// Sends a GET request with access token included inside the headers.
+  Future<dynamic> get(Uri uri) async {
+    final client = HttpClient();
+    final request = await client.getUrl(uri)
+      ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+    final response = await request.close();
+    final responseBody = await response.transform(utf8.decoder).join();
+
+    client.close();
+
+    return jsonDecode(responseBody);
+  }
+
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {
       final url = Uri.parse(
           '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
-      final client = HttpClient();
-      final request = await client.getUrl(url)
-        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
+      final response = await get(url);
 
-      client.close();
-
-      return jsonDecode(responseBody);
+      return response;
     } catch (e, s) {
       debugPrint('An error occured during fetching user info.');
       onError(e, s);
