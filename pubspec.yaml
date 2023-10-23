@@ -1,7 +1,7 @@
 name: keycloak_wrapper
 description: Keycloak Single Sign-On (SSO) authentication package for Flutter framework.
 version: 0.2.2
-repository: https://github.com/fa-fifi/keycloak-wrapper
+repository: https://github.com/Irfanakbari/keycloak-wrapper.git
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
