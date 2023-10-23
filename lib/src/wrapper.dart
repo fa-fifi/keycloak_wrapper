@@ -9,25 +9,28 @@ class KeycloakWrapper {
 
   late final _streamController = StreamController<bool>();
 
-  /// Stream of the user authentication state. Returns true if login is successful.
+  /// Stream of the user authentication state.
+  /// Returns true if login is successful.
   Stream<bool> get authenticationStream => _streamController.stream;
 
   /// Details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
-  /// Called whenever an error gets caught. By default, all errors will be printed into the console.
+  /// Called whenever an error gets caught.
+  /// By default, all errors will be printed into the console.
   void Function(Object e, StackTrace s) onError = (e, s) => debugPrint('$e');
 
-  /// Returns the payload of the id token.
-  Map<String, dynamic>? get idToken => jwtDecode(tokenResponse?.idToken);
+  /// Returns the id token string.\
+  /// To get the payload, do ```jwtDecode(KeycloakWrapper().idToken)```.
+  String? get idToken => tokenResponse?.idToken;
 
-  /// Returns the payload of the access token.
-  Map<String, dynamic>? get accessToken =>
-      jwtDecode(tokenResponse?.accessToken);
+  /// Returns the access token string.\
+  /// To get the payload, do ```jwtDecode(KeycloakWrapper().accessToken)```.
+  String? get accessToken => tokenResponse?.accessToken;
 
-  /// Returns the payload of the refresh token.
-  Map<String, dynamic>? get refreshToken =>
-      jwtDecode(tokenResponse?.refreshToken);
+  /// Returns the refresh token string.\
+  /// To get the payload, do `jwtDecode(KeycloakWrapper().refreshToken)`.
+  String? get refreshToken => tokenResponse?.refreshToken;
 
   /// Initializes the user authentication state and refresh token.
   Future<void> initialize() async {
@@ -52,7 +55,7 @@ class KeycloakWrapper {
               allowInsecureConnections: true));
 
           await _secureStorage.write(
-              key: _refreshTokenKey, value: tokenResponse?.refreshToken);
+              key: _refreshTokenKey, value: refreshToken);
 
           debugPrint(
               '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.');
@@ -78,7 +81,8 @@ class KeycloakWrapper {
     }
   }
 
-  /// Logs the user in. Returns true if login is successful.
+  /// Logs the user in.
+  /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
@@ -106,11 +110,12 @@ class KeycloakWrapper {
     }
   }
 
-  /// Logs the user out. Returns true if logout is successful.
+  /// Logs the user out.
+  /// Returns true if logout is successful.
   Future<bool> logout() async {
     try {
       final request = EndSessionRequest(
-          idTokenHint: tokenResponse?.idToken,
+          idTokenHint: idToken,
           issuer: KeycloakConfig.instance.issuer,
           postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri);
 
@@ -133,8 +138,7 @@ class KeycloakWrapper {
           '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
       final client = HttpClient();
       final request = await client.getUrl(url)
-        ..headers.add(HttpHeaders.authorizationHeader,
-            'Bearer ${tokenResponse?.accessToken}');
+        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
 
