@@ -47,7 +47,8 @@ class LoginScreen extends StatelessWidget {
         bundleIdentifier: '<bundle_identifier>',
         clientId: '<client_id>',
         domain: '<domain>',
-        realm: '<realm>');
+        realm: '<realm>',
+        clientSecret: '<client_secret>');
 
     // Check if user has successfully logged in.
     final isLoggedIn = await keycloakWrapper.login(config);

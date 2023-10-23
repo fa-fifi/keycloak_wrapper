@@ -8,17 +8,21 @@ class KeycloakConfig {
   factory KeycloakConfig(
           {required String bundleIdentifier,
           required String clientId,
+          required String clientSecret,
           required String domain,
           required String realm}) =>
       instance
         ..bundleIdentifier = bundleIdentifier
         ..clientId = clientId
+        ..clientSecret = clientSecret
         ..domain = domain
         ..realm = realm;
 
   String? _bundleIdentifier;
 
   String? _clientId;
+
+  String? _clientSecret;
 
   String? _domain;
 
@@ -29,6 +33,9 @@ class KeycloakConfig {
 
   /// The alphanumeric ID string that is used in OIDC requests and in the Keycloak database to identify the client.
   String get clientId => _clientId ?? '';
+
+  /// The alphanumeric Secret string that is used in OIDC requests and in the Keycloak database to identify the client.
+  String get clientSecret => _clientSecret ?? '';
 
   /// The client domain name, host or IP address.
   String get domain => _domain ?? '';
@@ -56,6 +63,13 @@ class KeycloakConfig {
     _secureStorage.write(key: _clientIdKey, value: value);
   }
 
+  /// The alphanumeric Secret string that is used in OIDC requests and in the Keycloak database to identify the client.
+  set clientSecret(String? value) {
+    if (value == null) return;
+    _clientSecret = value;
+    _secureStorage.write(key: _clientSecretKey, value: value);
+  }
+
   /// The client domain name, host or IP address.
   set domain(String? value) {
     if (value == null) return;
@@ -74,6 +88,7 @@ class KeycloakConfig {
   Future<void> initialize() async {
     bundleIdentifier = await _secureStorage.read(key: _bundleIdentifierKey);
     clientId = await _secureStorage.read(key: _clientIdKey);
+    clientSecret = await _secureStorage.read(key: _clientSecretKey);
     domain = await _secureStorage.read(key: _domainKey);
     realm = await _secureStorage.read(key: _realmKey);
   }
