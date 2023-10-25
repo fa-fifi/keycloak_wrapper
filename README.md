@@ -1,10 +1,10 @@
-# Keycloak Wrapper Plugin
+# Keycloak Wrapper
 [![pub package](https://img.shields.io/pub/v/keycloak_wrapper.svg)](https://pub.dartlang.org/packages/keycloak_wrapper)
 [![likes](https://img.shields.io/pub/likes/keycloak_wrapper)](https://pub.dev/packages/keycloak_wrapper/score)
 [![pub points](https://img.shields.io/pub/points/keycloak_wrapper)](https://pub.dev/packages/keycloak_wrapper/score)
 [![popularity](https://img.shields.io/pub/popularity/keycloak_wrapper)](https://pub.dev/packages/keycloak_wrapper/score)
 
-<br/><a href="https://www.keycloak.org"><img src="https://www.keycloak.org/resources/images/keycloak_logo_200px.svg" width="100%" alt="cover image" url="https://www.keycloak.org"/></a><br/>
+<br/><a href="https://www.keycloak.org"><img src="https://www.keycloak.org/resources/images/logo.svg" width="100%" alt="cover image" url="https://www.keycloak.org"/></a><br/>
 
 Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this plugin. Tokens are automatically managed under the hood, and if necessary, you can easily access them without writing any extra code. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
 
@@ -40,7 +40,7 @@ Attribute application@name at AndroidManifest.xml:5:9-42 requires a placeholder 
 
 If you see this error then update your `build.gradle` to use `+=` instead.
 
-Currently, this plugin sets the Keycloak issuer URL to use cleartext HTTP traffic. To avoid any network error issues when using this plugin, it is a good practice to enable the `android:usesCleartextTraffic` attribute under the `<application>` tag inside your `AndroidManifest.xml` file. This setup might be removed in the future once we find a better solution.
+In case your domain is using cleartext network traffic, such as HTTP, don't forget to enable the `android:usesCleartextTraffic` attribute under the `<application>` tag inside your `AndroidManifest.xml` file. This will ensure your app will be able to communicate with the keycloak server without any network issues.
 
 ```xml
 <manifest ...>
