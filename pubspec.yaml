@@ -3,8 +3,10 @@ description: Keycloak Single Sign-On (SSO) authentication package for Flutter fr
 version: 0.2.2
 repository: https://github.com/fa-fifi/keycloak-wrapper
 issue_tracker: https://github.com/fa-fifi/keycloak-wrapper/issues
-funding: https://www.buymeacoffee.com/fa.fifi
 topics: [authentication, keycloak, oauth2, openidconnect]
+
+funding:
+ - https://www.buymeacoffee.com/fa.fifi
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
