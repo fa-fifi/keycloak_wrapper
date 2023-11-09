@@ -5,9 +5,6 @@ repository: https://github.com/fa-fifi/keycloak-wrapper
 issue_tracker: https://github.com/fa-fifi/keycloak-wrapper/issues
 topics: [authentication, keycloak, oauth2, openidconnect]
 
-funding:
- - https://www.buymeacoffee.com/fa.fifi
-
 environment:
   sdk: '>=3.1.2 <4.0.0'
   flutter: ">=1.17.0"
