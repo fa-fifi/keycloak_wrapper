@@ -1,5 +1,9 @@
 part of keycloak_wrapper;
 
+/// Manages user authentication and token exchange using Keycloak.
+/// 
+/// It uses KeycloakConfig for configuration settings and relies on the
+/// AppAuth package for OAuth2 authorization.
 class KeycloakWrapper {
   KeycloakWrapper._();
 

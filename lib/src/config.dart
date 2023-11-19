@@ -5,6 +5,10 @@ class KeycloakConfig {
 
   static final KeycloakConfig instance = KeycloakConfig._();
 
+  /// Initializes the configuration settings such as
+  /// [bundleIdentifier], [clientId], [domain], and [realm]. These settings
+  /// are essential for interacting with the Keycloak server during the
+  /// authentication process.
   factory KeycloakConfig(
           {required String bundleIdentifier,
           required String clientId,
