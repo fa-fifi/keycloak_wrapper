@@ -1,6 +1,6 @@
 part of keycloak_wrapper;
 
-// TODO: Implements custom exception.
+// TODO: Implement custom exception
 class KeycloakException implements Exception {
   final String message;
   final Uri? uri;
