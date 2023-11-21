@@ -1,5 +1,6 @@
 part of keycloak_wrapper;
 
+/// Extension on [TokenResponse]
 extension TokenResponseHelper on TokenResponse? {
   /// Checks the validation of the token response.
   bool get isValid =>
