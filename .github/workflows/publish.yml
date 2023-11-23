@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-      - uses: actions/checkout@main
+        uses: actions/checkout@main
       - name: Publish package
         uses: k-paxian/dart-package-publisher@master
         with:
