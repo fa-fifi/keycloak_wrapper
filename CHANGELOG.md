@@ -1,4 +1,4 @@
-## 0.3.2
+## 0.3.3
 * Automate publishing workflow.
 
 ## 0.3.0
