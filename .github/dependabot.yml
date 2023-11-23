@@ -7,7 +7,7 @@ updates:
       interval: "monthly"
     commit-message:
       prefix: "⬆️ "
-    target-branch: "development"
+    target-branch: "dev"
 
   # Mantain dependencies for pub
   - package-ecosystem: "pub"
@@ -17,5 +17,5 @@ updates:
       day: "sunday"
     commit-message:
       prefix: "⬆️ "
-    target-branch: "development"
+    target-branch: "dev"
     versioning-strategy: increase
