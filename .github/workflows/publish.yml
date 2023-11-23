@@ -2,8 +2,7 @@ name: Publish to pub.dev
 
 on:
   push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+*'
+    tags: 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   publish:
@@ -11,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-      - uses: actions/checkout@main
+        uses: actions/checkout@main
       - name: Publish package
         uses: k-paxian/dart-package-publisher@master
         with:
