@@ -1,3 +1,6 @@
+## 0.3.3
+* Automate publishing workflow.
+
 ## 0.3.0
 * Fix Keycloak issuer url.
 * Create a custom GET request method with access token included inside the header.
