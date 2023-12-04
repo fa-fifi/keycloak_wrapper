@@ -6,25 +6,25 @@ class KeycloakConfig {
   static final KeycloakConfig instance = KeycloakConfig._();
 
   /// Initializes the configuration settings such as
-  /// [bundleIdentifier], [clientId], [domain], and [realm]. These settings
+  /// [bundleIdentifier], [clientId], [frontendUrl], and [realm]. These settings
   /// are essential for interacting with the Keycloak server during the
   /// authentication process.
   factory KeycloakConfig(
           {required String bundleIdentifier,
           required String clientId,
-          required String domain,
+          required String frontendUrl,
           required String realm}) =>
       instance
         ..bundleIdentifier = bundleIdentifier
         ..clientId = clientId
-        ..domain = domain
+        ..frontendUrl = frontendUrl
         ..realm = realm;
 
   String? _bundleIdentifier;
 
   String? _clientId;
 
-  String? _domain;
+  String? _frontendUrl;
 
   String? _realm;
 
@@ -34,14 +34,14 @@ class KeycloakConfig {
   /// The alphanumeric ID string that is used in OIDC requests and in the Keycloak database to identify the client.
   String get clientId => _clientId ?? '';
 
-  /// The client domain name, host or IP address.
-  String get domain => _domain ?? '';
+  /// The fixed base URL for frontend requests.
+  String get frontendUrl => _frontendUrl ?? '';
 
   /// The realm name.
   String get realm => _realm ?? '';
 
   /// The base URI for the authorization server.
-  String get issuer => '$domain/realms/$realm';
+  String get issuer => '$frontendUrl/realms/$realm';
 
   /// The callback URI after the user has been successfully authorized and granted an access token.
   String get redirectUri => '$_bundleIdentifier://login-callback';
@@ -60,11 +60,11 @@ class KeycloakConfig {
     _secureStorage.write(key: _clientIdKey, value: value);
   }
 
-  /// The client domain name, host or IP address.
-  set domain(String? value) {
+  /// The fixed base URL for frontend requests.
+  set frontendUrl(String? value) {
     if (value == null) return;
-    _domain = value;
-    _secureStorage.write(key: _domainKey, value: value);
+    _frontendUrl = value;
+    _secureStorage.write(key: _frontendUrlKey, value: value);
   }
 
   /// The realm name.
@@ -78,7 +78,7 @@ class KeycloakConfig {
   Future<void> initialize() async {
     bundleIdentifier = await _secureStorage.read(key: _bundleIdentifierKey);
     clientId = await _secureStorage.read(key: _clientIdKey);
-    domain = await _secureStorage.read(key: _domainKey);
+    frontendUrl = await _secureStorage.read(key: _frontendUrlKey);
     realm = await _secureStorage.read(key: _realmKey);
   }
 }
