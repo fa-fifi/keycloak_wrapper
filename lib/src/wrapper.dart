@@ -121,7 +121,8 @@ class KeycloakWrapper {
       final request = EndSessionRequest(
           idTokenHint: idToken,
           issuer: KeycloakConfig.instance.issuer,
-          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri);
+          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri,
+          allowInsecureConnections: true);
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
