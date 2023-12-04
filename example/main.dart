@@ -46,7 +46,7 @@ class LoginScreen extends StatelessWidget {
     final config = KeycloakConfig(
         bundleIdentifier: '<bundle_identifier>',
         clientId: '<client_id>',
-        domain: '<domain>',
+        frontendUrl: '<frontend_url>',
         realm: '<realm>');
 
     // Check if user has successfully logged in.
