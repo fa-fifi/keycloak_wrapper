@@ -46,28 +46,24 @@ class KeycloakConfig {
   /// The callback URI after the user has been successfully authorized and granted an access token.
   String get redirectUri => '$_bundleIdentifier://login-callback';
 
-  /// The application unique identifier.
   set bundleIdentifier(String? value) {
     if (value == null) return;
     _bundleIdentifier = value;
     _secureStorage.write(key: _bundleIdentifierKey, value: value);
   }
 
-  /// The alphanumeric ID string that is used in OIDC requests and in the Keycloak database to identify the client.
   set clientId(String? value) {
     if (value == null) return;
     _clientId = value;
     _secureStorage.write(key: _clientIdKey, value: value);
   }
 
-  /// The fixed base URL for frontend requests.
   set frontendUrl(String? value) {
     if (value == null) return;
     _frontendUrl = value;
     _secureStorage.write(key: _frontendUrlKey, value: value);
   }
 
-  /// The realm name.
   set realm(String? value) {
     if (value == null) return;
     _realm = value;
