@@ -1,3 +1,7 @@
+## 0.4.0
+* Add package screenshots.
+* Rename domain variable into frontendUrl to avoid confusion.
+
 ## 0.3.3
 * Automate publishing workflow.
 
