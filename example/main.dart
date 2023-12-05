@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  // Logs user in using given configuration.
+  // Login using the given configuration.
   Future<bool> login() async {
     final config = KeycloakConfig(
         bundleIdentifier: '<bundle_identifier>',
@@ -69,7 +69,7 @@ class LoginScreen extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  // Logs user out from the current realm.
+  // Logout from the current realm.
   Future<bool> logout() async {
     // Check if user has successfully logged out.
     final isLoggedOut = await keycloakWrapper.logout();
@@ -80,9 +80,23 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Center(
-          child: TextButton(
-            onPressed: logout,
-            child: const Text('Logout'),
+          child: Column(
+            children: [
+              FutureBuilder(
+                // Retrieve the user information.
+                future: keycloakWrapper.getUserInfo(),
+                builder: (context, snapshot) {
+                  final name = snapshot.data?['name'] as String;
+                  final email = snapshot.data?['email'] as String;
+
+                  return Text('$name\n$email\n\n');
+                },
+              ),
+              TextButton(
+                onPressed: logout,
+                child: const Text('Logout'),
+              ),
+            ],
           ),
         ),
       );
