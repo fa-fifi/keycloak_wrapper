@@ -1,4 +1,5 @@
-library keycloak_wrapper;
+/// A wrapper library that contains all of the main methods.
+library;
 
 import 'dart:async';
 import 'dart:convert';

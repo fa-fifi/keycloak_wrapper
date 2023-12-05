@@ -1,4 +1,4 @@
-part of keycloak_wrapper;
+part of '../keycloak_wrapper.dart';
 
 const _appAuth = FlutterAppAuth();
 const _secureStorage = FlutterSecureStorage();
