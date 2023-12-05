@@ -1,3 +1,7 @@
+## 0.4.1
+* Edit readme.md.
+* Update documentation.
+
 ## 0.4.0
 * Add package screenshots.
 * Rename domain variable into frontendUrl to avoid confusion.
