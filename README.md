@@ -6,13 +6,15 @@
 
 <br/><a href="https://www.keycloak.org"><img src="https://www.keycloak.org/resources/images/logo.svg" width="100%" alt="cover image" url="https://www.keycloak.org"/></a><br/>
 
-Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this plugin. Tokens are automatically managed under the hood, and if necessary, you can easily access them without writing any extra code. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
+Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this plugin. Tokens are automatically managed under the hood and are easily accessible. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
 
 ## 👟 Getting Started
 
-For end-user authentication and authorization, this plugin will integrate with the [**AppAuth**](https://appauth.io) SDKs to establish connections with OAuth 2.0 and OpenID Connect. This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers.  Additionally, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
+For end-user authentication and authorization, this plugin integrates with the [**AppAuth**](https://appauth.io) SDK to establish connections with OAuth 2.0 and OpenID Connect. This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers. Meanwhile, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
 
 - [**AndroidX**](https://developer.android.com/jetpack/androidx) is required for this package. Starting from Flutter v1.12.13, newly created projects already enable AndroidX by default. In case your project was created prior to this Flutter version, please migrate it before using this package. You can follow this migration [guide](https://docs.flutter.dev/release/breaking-changes/androidx-migration) provided by the Flutter team.
+
+- Starting with Android API 28 and iOS 9, insecure HTTP connections are disabled by default on iOS and Android. To allow cleartext connections for your builds, you can check out this [guide](https://docs.flutter.dev/release/breaking-changes/network-policy-ios-android) provided by the Flutter team. However, it is not recommended to do this for your release build. Please use secure connections inside your release build whenever possible. 
 
 ## 🕹️ Platform Configuration
 Below are the configurations for each supported platform.
@@ -40,18 +42,6 @@ Attribute application@name at AndroidManifest.xml:5:9-42 requires a placeholder 
 
 If you see this error then update your `build.gradle` to use `+=` instead.
 
-In case your domain is using cleartext network traffic, such as HTTP, don't forget to enable the `android:usesCleartextTraffic` attribute under the `<application>` tag inside your `AndroidManifest.xml` file. This will ensure your app will be able to communicate with the keycloak server without any network issues.
-
-```xml
-<manifest ...>
-    <application
-        ...
-        android:usesCleartextTraffic="true">
-        ...
-    </application>
-</manifest>
-```
-
 ### iOS/macOS Setup
 Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so that there should be a section in it that look similar to the following but replace `<bundle_identifier>` with the desired value.
 
@@ -69,7 +59,7 @@ Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so th
 </array>
 ```
 
-## 🚀 Plugin Usage
+## 🚀 Usage
 Use it directly or create an instance of the plugin somewhere inside your code, like below.
 
 ```dart
@@ -87,7 +77,7 @@ void main() async {
 }
 ```
 
-To listen to the user authentication stream, create a StreamBuilder widget that listens to the `keycloakWrapper.authenticationStream` and navigates the user to the login screen when the stream returns false and redirects the user to the home screen when the login is successful. Set the initial value of the StreamBuilder widget to `false` to make sure the stream will never return null.
+To listen to the user authentication state stream, create a StreamBuilder widget that listens to the `keycloakWrapper.authenticationStream` and navigates the user to the login screen when the stream returns false and redirects the user to the home screen when the login is successful. Set the initial value of the StreamBuilder widget to `false` to make sure the stream will never return null.
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -104,21 +94,30 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-Afterwards, create a button somewhere inside your login screen and use the following method to initiate the login process. Make sure to replace all the placeholders with your own values.
+Afterwards, create a button somewhere inside your login screen and use the following method to initiate the login process. Make sure to replace all the placeholders with your own configuration values.
 
 ```dart
 Future<void> login() async {
     final config = KeycloakConfig(
         bundleIdentifier: '<bundle_identifier>',
         clientId: '<client_id>',
-        domain: '<domain>',
+        frontendUrl: '<frontend_url>',
         realm: '<realm>');
 
     await keycloakWrapper.login(config);
   }
 ```
 
-For logout, just this simple method will do. Make sure you pop off all stacked screens, if there are any.
+Once logged in, you're able to retrieve the user's information like below.
+
+```
+final user = await keycloakWrapper.getUserInfo();
+
+final name = user?['name'];
+final email = user?['email'];
+```
+
+For logout, just this simple method will do. Make sure to pop off all stacked screens, if there are any.
 
 ```dart
 Future<void> logout() async {
@@ -135,6 +134,3 @@ keycloakWrapper.onError = (e, s) {
 ```
 
 You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this plugin works inside a real-life app.
-
-## ✨ Available APIs
-To be filled in the next update.

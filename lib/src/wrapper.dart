@@ -1,9 +1,8 @@
-part of keycloak_wrapper;
+part of '../keycloak_wrapper.dart';
 
 /// Manages user authentication and token exchange using Keycloak.
 ///
-/// It uses KeycloakConfig for configuration settings and relies on the
-/// AppAuth package for OAuth2 authorization.
+/// It uses [KeycloakConfig] for configuration settings and relies on flutter_appauth package for OAuth2 authorization.
 class KeycloakWrapper {
   KeycloakWrapper._();
 
@@ -14,25 +13,30 @@ class KeycloakWrapper {
   late final _streamController = StreamController<bool>();
 
   /// Stream of the user authentication state.
-  /// Returns true if login is successful.
+  ///
+  /// Returns true if the user is currently logged in.
   Stream<bool> get authenticationStream => _streamController.stream;
 
   /// Details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
   /// Called whenever an error gets caught.
+  ///
   /// By default, all errors will be printed into the console.
   void Function(Object e, StackTrace s) onError = (e, s) => debugPrint('$e');
 
-  /// Returns the id token string.\
-  /// To get the payload, do ```jwtDecode(KeycloakWrapper().idToken)```.
+  /// Returns the id token string.
+  ///
+  /// To get the payload, do `jwtDecode(KeycloakWrapper().idToken)`.
   String? get idToken => tokenResponse?.idToken;
 
-  /// Returns the access token string.\
-  /// To get the payload, do ```jwtDecode(KeycloakWrapper().accessToken)```.
+  /// Returns the access token string.
+  ///
+  /// To get the payload, do `jwtDecode(KeycloakWrapper().accessToken)`.
   String? get accessToken => tokenResponse?.accessToken;
 
-  /// Returns the refresh token string.\
+  /// Returns the refresh token string.
+  ///
   /// To get the payload, do `jwtDecode(KeycloakWrapper().refreshToken)`.
   String? get refreshToken => tokenResponse?.refreshToken;
 
@@ -86,6 +90,7 @@ class KeycloakWrapper {
   }
 
   /// Logs the user in.
+  ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
     try {
@@ -115,6 +120,7 @@ class KeycloakWrapper {
   }
 
   /// Logs the user out.
+  ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
     try {
@@ -136,7 +142,9 @@ class KeycloakWrapper {
     }
   }
 
-  /// Sends a GET request with access token included inside the headers.
+  /// Sends a GET request with Bearer Token authorization header.
+  ///
+  /// To send a request using another HTTP method, just copy this function's code blocks and replace the `getUrl()` method.
   Future<dynamic> get(Uri uri) async {
     final client = HttpClient();
     final request = await client.getUrl(uri)
