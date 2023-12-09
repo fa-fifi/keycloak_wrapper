@@ -110,7 +110,7 @@ Future<void> login() async {
 
 Once logged in, you're able to retrieve the user's information like below.
 
-```
+```dart
 final user = await keycloakWrapper.getUserInfo();
 
 final name = user?['name'];
