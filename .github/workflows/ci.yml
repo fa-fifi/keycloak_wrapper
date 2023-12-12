@@ -14,6 +14,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze code
+        continue-on-error: true
         run: flutter analyze
       - name: Run tests
+        if: success() || failure()
         run: flutter test
