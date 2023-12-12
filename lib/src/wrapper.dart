@@ -12,12 +12,12 @@ class KeycloakWrapper {
 
   late final _streamController = StreamController<bool>();
 
-  /// Stream of the user authentication state.
+  /// The stream of the user authentication state.
   ///
   /// Returns true if the user is currently logged in.
   Stream<bool> get authenticationStream => _streamController.stream;
 
-  /// Details from making a successful token exchange.
+  /// The details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
   /// Called whenever an error gets caught.
@@ -79,7 +79,7 @@ class KeycloakWrapper {
     }
   }
 
-  /// Checks if there is network connectivity.
+  /// Whether there is network connectivity.
   Future<bool> hasNetwork() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -144,7 +144,7 @@ class KeycloakWrapper {
 
   /// Sends a GET request with Bearer Token authorization header.
   ///
-  /// To send a request using another HTTP method, just copy this function's code blocks and replace the `getUrl()` method.
+  /// To send a request using another HTTP method, just replace the `getUrl()` method inside this code block.
   Future<dynamic> get(Uri uri) async {
     final client = HttpClient();
     final request = await client.getUrl(uri)
