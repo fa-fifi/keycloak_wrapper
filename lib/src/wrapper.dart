@@ -79,16 +79,6 @@ class KeycloakWrapper {
     }
   }
 
-  /// Whether there is network connectivity.
-  Future<bool> hasNetwork() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException {
-      return false;
-    }
-  }
-
   /// Logs the user in.
   ///
   /// Returns true if login is successful.
@@ -142,27 +132,12 @@ class KeycloakWrapper {
     }
   }
 
-  /// Sends a GET request with Bearer Token authorization header.
-  ///
-  /// To send a request using another HTTP method, just replace the `getUrl()` method inside this code block.
-  Future<dynamic> get(Uri uri) async {
-    final client = HttpClient();
-    final request = await client.getUrl(uri)
-      ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
-    final response = await request.close();
-    final responseBody = await response.transform(utf8.decoder).join();
-
-    client.close();
-
-    return jsonDecode(responseBody);
-  }
-
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {
       final url = Uri.parse(
           '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
-      final response = await get(url);
+      final response = await getWithBearerAuthentication(url, accessToken);
 
       return response;
     } catch (e, s) {
