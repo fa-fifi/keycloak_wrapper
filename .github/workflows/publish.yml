@@ -2,19 +2,39 @@ name: Publish Package
 
 on:
   push:
-    tags: 'v[0-9]+.[0-9]+.[0-9]+*'
+    branches: main
 
 jobs:
   publish:
     environment: pub.dev
     runs-on: ubuntu-latest
+    outputs:
+      localVersion: ${{ steps.package.outputs.localVersion }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
       - name: Publish package
+        id: package
         uses: k-paxian/dart-package-publisher@master
         with:
           accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
           refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
           flutter: true
           format: true
+  release:
+    runs-on: ubuntu-latest
+    if: success()
+    needs: publish
+    steps:
+      - name: Create tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ needs.publish.outputs.localVersion }}",
+              sha: context.sha
+            })
+      - name: Create release
+        uses: softprops/action-gh-release@v1
