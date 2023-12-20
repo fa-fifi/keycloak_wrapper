@@ -3,7 +3,7 @@ name: Publish Package
 on:
   push:
     branches: main
-    paths: pubspec.yaml
+    paths: CHANGELOG.md
 
 jobs:
   publish:
@@ -26,17 +26,15 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: publish
-    if: needs.publish.outputs.success == true
+    if: needs.publish.outputs.success == 'true'
+    permissions: write-all
     steps:
-      - name: Create tag
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/${{ needs.publish.outputs.version }}",
-              sha: context.sha
-            })
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Extract release notes
+        id: release-notes
+        uses: ffurrer2/extract-release-notes@v1.17.0
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create v${{ needs.publish.outputs.version }} --notes '${{ steps.release-notes.outputs.release_notes }}'
