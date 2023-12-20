@@ -3,13 +3,15 @@ name: Publish Package
 on:
   push:
     branches: main
+    paths: pubspec.yaml
 
 jobs:
   publish:
     environment: pub.dev
     runs-on: ubuntu-latest
     outputs:
-      localVersion: ${{ steps.package.outputs.localVersion }}
+      success: ${{ steps.package.outputs.success }}
+      version: ${{ steps.package.outputs.localVersion }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,8 +25,8 @@ jobs:
           format: true
   release:
     runs-on: ubuntu-latest
-    if: success()
     needs: publish
+    if: needs.publish.outputs.success == true
     steps:
       - name: Create tag
         uses: actions/github-script@v7
@@ -33,7 +35,7 @@ jobs:
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{ needs.publish.outputs.localVersion }}",
+              ref: "refs/tags/${{ needs.publish.outputs.version }}",
               sha: context.sha
             })
       - name: Create release
