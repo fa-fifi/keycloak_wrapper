@@ -8,6 +8,7 @@ updates:
       - "fa-fifi"
     commit-message:
       prefix: "⬆️ "
+
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
