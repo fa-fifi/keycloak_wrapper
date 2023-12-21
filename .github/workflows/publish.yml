@@ -4,11 +4,11 @@ on:
   push:
     branches: main
     paths: CHANGELOG.md
-
+    
 jobs:
   publish:
-    environment: pub.dev
     runs-on: ubuntu-latest
+    environment: pub.dev
     outputs:
       success: ${{ steps.package.outputs.success }}
       version: ${{ steps.package.outputs.localVersion }}
@@ -25,15 +25,15 @@ jobs:
           format: true
   release:
     runs-on: ubuntu-latest
+    permissions: write-all
     needs: publish
     if: needs.publish.outputs.success == 'true'
-    permissions: write-all
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Extract release notes
         id: release-notes
-        uses: ffurrer2/extract-release-notes@v1.17.0
+        uses: ffurrer2/extract-release-notes@v1
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
