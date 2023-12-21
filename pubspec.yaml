@@ -4,7 +4,7 @@ version: 0.4.23
 repository: https://github.com/fa-fifi/keycloak-wrapper
 topics: [ authentication, keycloak, oauth2, openidconnect ]
 screenshots:
-  - description: "Login screen with the default Keycloak theme"
+  - description: "Default Keycloak login screen"
     path: screenshots/login-screen.png
 
 environment:

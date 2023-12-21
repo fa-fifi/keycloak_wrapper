@@ -4,7 +4,7 @@ part of '../keycloak_wrapper.dart';
 class KeycloakConfig {
   KeycloakConfig._();
 
-  /// The single instance of this class.
+  /// The singleton of this class.
   static final KeycloakConfig instance = KeycloakConfig._();
 
   /// Initializes the configuration settings, which are essential for interacting with the Keycloak server.

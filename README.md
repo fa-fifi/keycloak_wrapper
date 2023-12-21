@@ -6,11 +6,11 @@
 
 <br/><a href="https://www.keycloak.org"><img src="https://www.keycloak.org/resources/images/logo.svg" width="100%" alt="cover image" url="https://www.keycloak.org"/></a><br/>
 
-Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this plugin. Tokens are automatically managed under the hood and are easily accessible. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
+Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this package. Tokens are automatically managed under the hood and are easily accessible. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
 
 ## Getting Started
 
-For end-user authentication and authorization, this plugin integrates with the [**AppAuth**](https://appauth.io) SDK to establish connections with OAuth 2.0 and OpenID Connect. This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers. Meanwhile, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
+For end-user authentication and authorization, this package integrates with the [**AppAuth**](https://appauth.io) SDK to establish connections with OAuth 2.0 and OpenID Connect. This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers. Meanwhile, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
 
 - [**AndroidX**](https://developer.android.com/jetpack/androidx) is required for this package. Starting from Flutter v1.12.13, newly created projects already enable AndroidX by default. In case your project was created prior to this Flutter version, please migrate it before using this package. You can follow this migration [guide](https://docs.flutter.dev/release/breaking-changes/androidx-migration) provided by the Flutter team.
 
@@ -57,13 +57,13 @@ Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so th
 ```
 
 ## Usage
-Use it directly or create an instance of the plugin somewhere inside your code, like below.
+Use it directly or create an instance of the package somewhere inside your code, like below.
 
 ```dart
 final keycloakWrapper = KeycloakWrapper();
 ```
 
-Initialize the plugin within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
+Initialize the package within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
 
 ```dart
 void main() async {
@@ -130,7 +130,7 @@ keycloakWrapper.onError = (e, s) {
 };
 ```
 
-You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this plugin works inside a real-life app.
+You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this package works inside a real-life app.
 
 ## Contributing
 
@@ -140,9 +140,9 @@ Contributions are welcome! However, please make sure to follow the guidelines be
 <br> Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak-wrapper/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
 - **Need some help?**
-<br> As of now, there isn't any discussion yet regarding any issue with the plugin, but feel free to open up a new one on Github under [Discussions](https://github.com/fa-fifi/keycloak-wrapper/discussions). I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
+<br> As of now, there isn't any discussion yet regarding any issue with the package, but feel free to open up a new one on Github under [Discussions](https://github.com/fa-fifi/keycloak-wrapper/discussions). I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
 
 - **Want to contribute?**
-<br> Since I am the only maintainer of this plugin, frequent bug fixes or updates might not be feasible. Therefore, any [pull requests](https://github.com/fa-fifi/keycloak-wrapper/pulls) are greatly appreciated! Please ensure that the PR description clearly outlines both the problem and its proposed solution. If applicable, include the relevant issue number in the description.
+<br> Since I am the only maintainer of this package, frequent bug fixes or updates might not be feasible. Therefore, any [pull requests](https://github.com/fa-fifi/keycloak-wrapper/pulls) are greatly appreciated! Please ensure that the PR description clearly outlines both the problem and its proposed solution. If applicable, include the relevant issue number in the description.
 
 Thanks! ❤️
