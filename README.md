@@ -8,16 +8,13 @@
 
 Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter apps seamlessly using this plugin. Tokens are automatically managed under the hood and are easily accessible. A user authentication state stream is also provided for the app to listen to in order to stay in sync with authentication status changes.
 
-## 👟 Getting Started
+## Getting Started
 
 For end-user authentication and authorization, this plugin integrates with the [**AppAuth**](https://appauth.io) SDK to establish connections with OAuth 2.0 and OpenID Connect. This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers. Meanwhile, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
 
 - [**AndroidX**](https://developer.android.com/jetpack/androidx) is required for this package. Starting from Flutter v1.12.13, newly created projects already enable AndroidX by default. In case your project was created prior to this Flutter version, please migrate it before using this package. You can follow this migration [guide](https://docs.flutter.dev/release/breaking-changes/androidx-migration) provided by the Flutter team.
 
-- Starting with Android API 28 and iOS 9, insecure HTTP connections are disabled by default on iOS and Android. To allow cleartext connections for your builds, you can check out this [guide](https://docs.flutter.dev/release/breaking-changes/network-policy-ios-android) provided by the Flutter team. However, it is not recommended to do this for your release build. Please use secure connections inside your release build whenever possible. 
-
-## 🕹️ Platform Configuration
-Below are the configurations for each supported platform.
+- Starting with Android API 28 and iOS 9, insecure HTTP connections are disabled by default on iOS and Android. To allow cleartext connections for your builds, you can check out this [guide](https://docs.flutter.dev/release/breaking-changes/network-policy-ios-android) provided by the Flutter team. However, it is not recommended to do this for your release build. Please use secure connections inside your release build whenever possible.
 
 ### Android Setup
 Go to the `build.gradle` file for your Android app to specify the custom scheme so that there should be a section in it that look similar to the following but replace `<package_name>` with the desired value.
@@ -59,7 +56,7 @@ Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so th
 </array>
 ```
 
-## 🚀 Usage
+## Usage
 Use it directly or create an instance of the plugin somewhere inside your code, like below.
 
 ```dart
@@ -134,3 +131,18 @@ keycloakWrapper.onError = (e, s) {
 ```
 
 You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this plugin works inside a real-life app.
+
+## Contributing
+
+Contributions are welcome! However, please make sure to follow the guidelines below to avoid unnecessary waste of time and resources.
+
+- **Found a bug?**
+<br> Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak-wrapper/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+
+- **Need some help?**
+<br> As of now, there isn't any discussion yet regarding any issue with the plugin, but feel free to open up a new one on Github under [Discussions](https://github.com/fa-fifi/keycloak-wrapper/discussions). I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
+
+- **Want to contribute?**
+<br> Since I am the only maintainer of this plugin, frequent bug fixes or updates might not be feasible. Therefore, any [pull requests](https://github.com/fa-fifi/keycloak-wrapper/pulls) are greatly appreciated! Please ensure that the PR description clearly outlines both the problem and its proposed solution. If applicable, include the relevant issue number in the description.
+
+Thanks! ❤️
