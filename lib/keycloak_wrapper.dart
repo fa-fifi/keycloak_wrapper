@@ -1,4 +1,4 @@
-/// A wrapper library that contains all of the main methods.
+/// The primary library of this package contains all authentication methods.
 library;
 
 import 'dart:async';
