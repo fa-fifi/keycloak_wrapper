@@ -1,21 +1,22 @@
 version: 2
 updates:
+  # Mantain dependencies for Github Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
-    reviewers:
-      - "fa-fifi"
     commit-message:
       prefix: "⬆️ "
 
+  # Mantain dependencies for pub
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday"
-    reviewers:
-      - "fa-fifi"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
     commit-message:
       prefix: "⬆️ "
     versioning-strategy: increase
