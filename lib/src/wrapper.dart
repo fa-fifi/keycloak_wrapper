@@ -57,7 +57,7 @@ class KeycloakWrapper {
         if (isConnected) {
           tokenResponse = await _appAuth.token(TokenRequest(
               KeycloakConfig.instance.clientId,
-              KeycloakConfig.instance.redirectUri,
+              KeycloakConfig.instance.redirectUrl,
               issuer: KeycloakConfig.instance.issuer,
               refreshToken: securedRefreshToken,
               allowInsecureConnections: true));
@@ -85,7 +85,7 @@ class KeycloakWrapper {
   Future<bool> login(KeycloakConfig config) async {
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
-          AuthorizationTokenRequest(config.clientId, config.redirectUri,
+          AuthorizationTokenRequest(config.clientId, config.redirectUrl,
               issuer: config.issuer,
               scopes: ['openid', 'profile', 'email', 'offline_access'],
               promptValues: ['login'],
@@ -117,7 +117,7 @@ class KeycloakWrapper {
       final request = EndSessionRequest(
           idTokenHint: idToken,
           issuer: KeycloakConfig.instance.issuer,
-          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri,
+          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUrl,
           allowInsecureConnections: true);
 
       await _appAuth.endSession(request);

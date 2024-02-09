@@ -9,17 +9,17 @@ class KeycloakConfig {
 
   /// Initializes the configuration settings, which are essential for interacting with the Keycloak server.
   factory KeycloakConfig(
-          {required String bundleIdentifier,
+          {required String redirectUrl,
           required String clientId,
           required String frontendUrl,
           required String realm}) =>
       instance
-        ..bundleIdentifier = bundleIdentifier
+        ..redirectUrl = redirectUrl
         ..clientId = clientId
         ..frontendUrl = frontendUrl
         ..realm = realm;
 
-  String? _bundleIdentifier;
+  String? _redirectUrl;
 
   String? _clientId;
 
@@ -27,8 +27,8 @@ class KeycloakConfig {
 
   String? _realm;
 
-  /// The application unique identifier.
-  String get bundleIdentifier => _bundleIdentifier ?? '';
+  /// The callback URI after the user has been successfully authorized and granted an access token.
+  String get redirectUrl => _redirectUrl ?? '';
 
   /// The alphanumeric ID string that is used in OIDC requests and in the Keycloak database to identify the client.
   String get clientId => _clientId ?? '';
@@ -42,13 +42,10 @@ class KeycloakConfig {
   /// The base URI for the authorization server.
   String get issuer => '$frontendUrl/realms/$realm';
 
-  /// The callback URI after the user has been successfully authorized and granted an access token.
-  String get redirectUri => '$_bundleIdentifier://login-callback';
-
-  set bundleIdentifier(String? value) {
+  set redirectUrl(String? value) {
     if (value == null) return;
-    _bundleIdentifier = value;
-    _secureStorage.write(key: _bundleIdentifierKey, value: value);
+    redirectUrl = value;
+    _secureStorage.write(key: _redirectUrlKey, value: value);
   }
 
   set clientId(String? value) {
@@ -71,7 +68,7 @@ class KeycloakConfig {
 
   /// Initializes Keycloak local configuration.
   Future<void> initialize() async {
-    bundleIdentifier = await _secureStorage.read(key: _bundleIdentifierKey);
+    redirectUrl = await _secureStorage.read(key: _redirectUrlKey);
     clientId = await _secureStorage.read(key: _clientIdKey);
     frontendUrl = await _secureStorage.read(key: _frontendUrlKey);
     realm = await _secureStorage.read(key: _realmKey);
