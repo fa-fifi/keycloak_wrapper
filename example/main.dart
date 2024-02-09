@@ -44,7 +44,7 @@ class LoginScreen extends StatelessWidget {
   // Login using the given configuration.
   Future<bool> login() async {
     final config = KeycloakConfig(
-        bundleIdentifier: '<bundle_identifier>',
+        redirectUrl: '<redirect_url>',
         clientId: '<client_id>',
         frontendUrl: '<frontend_url>',
         realm: '<realm>');
