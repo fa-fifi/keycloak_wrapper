@@ -131,7 +131,6 @@ class KeycloakWrapper {
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
-
       _streamController.add(false);
       return true;
     } catch (e, s) {
@@ -148,9 +147,14 @@ class KeycloakWrapper {
     try {
       final url = Uri.parse(
           '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
-      final response = await getWithBearerAuthentication(url, accessToken);
+      final client = HttpClient();
+      final request = await client.getUrl(url)
+        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
 
-      return response;
+      client.close();
+      return jsonDecode(responseBody);
     } catch (e, s) {
       debugPrint('An error occured during fetching user info.');
       onError(e, s);
