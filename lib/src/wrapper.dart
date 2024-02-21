@@ -17,6 +17,9 @@ class KeycloakWrapper {
   /// Returns true if the user is currently logged in.
   Stream<bool> get authenticationStream => _streamController.stream;
 
+  /// Whether this package has been initialized.
+  bool isInitialized = false;
+
   /// The details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
@@ -73,6 +76,8 @@ class KeycloakWrapper {
           _streamController.add(true);
         }
       }
+
+      isInitialized = true;
     } catch (e, s) {
       debugPrint('An error occured during initialization.');
       onError(e, s);
@@ -83,6 +88,8 @@ class KeycloakWrapper {
   ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
+    assert(isInitialized,
+        'Make sure the package has been initialized prior to calling its methods.');
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
           AuthorizationTokenRequest(config.clientId, config.redirectUri,
@@ -113,6 +120,8 @@ class KeycloakWrapper {
   ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
+    assert(isInitialized,
+        'Make sure the package has been initialized prior to calling its methods.');
     try {
       final request = EndSessionRequest(
           idTokenHint: idToken,
@@ -134,6 +143,8 @@ class KeycloakWrapper {
 
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
+    assert(isInitialized,
+        'Make sure the package has been initialized prior to calling its methods.');
     try {
       final url = Uri.parse(
           '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
