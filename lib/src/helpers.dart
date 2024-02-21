@@ -22,6 +22,8 @@ Future<bool> hasNetwork() async {
 }
 
 /// Sends a GET request with Bearer Token authorization header.
+@Deprecated('Will be removed in the next minor release.'
+    'Please consider using http package instead to send a GET request.')
 Future<dynamic> getWithBearerAuthentication(
     Uri uri, String? accessToken) async {
   final client = HttpClient();
@@ -31,6 +33,5 @@ Future<dynamic> getWithBearerAuthentication(
   final responseBody = await response.transform(utf8.decoder).join();
 
   client.close();
-
   return jsonDecode(responseBody);
 }

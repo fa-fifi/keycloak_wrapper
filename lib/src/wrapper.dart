@@ -17,6 +17,9 @@ class KeycloakWrapper {
   /// Returns true if the user is currently logged in.
   Stream<bool> get authenticationStream => _streamController.stream;
 
+  /// Whether this package has been initialized.
+  bool isInitialized = false;
+
   /// The details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
@@ -73,6 +76,8 @@ class KeycloakWrapper {
           _streamController.add(true);
         }
       }
+
+      isInitialized = true;
     } catch (e, s) {
       debugPrint('An error occured during initialization.');
       onError(e, s);
@@ -83,6 +88,8 @@ class KeycloakWrapper {
   ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
+    assert(isInitialized,
+        'Make sure the package has been initialized prior to calling its methods.');
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
           AuthorizationTokenRequest(config.clientId, config.redirectUrl,
@@ -113,6 +120,8 @@ class KeycloakWrapper {
   ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
+    assert(isInitialized,
+        'Make sure the package has been initialized prior to calling its methods.');
     try {
       final request = EndSessionRequest(
           idTokenHint: idToken,
@@ -122,7 +131,6 @@ class KeycloakWrapper {
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
-
       _streamController.add(false);
       return true;
     } catch (e, s) {
@@ -134,12 +142,19 @@ class KeycloakWrapper {
 
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
+    assert(isInitialized,
+        'Make sure the package has been initialized prior to calling its methods.');
     try {
       final url = Uri.parse(
           '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
-      final response = await getWithBearerAuthentication(url, accessToken);
+      final client = HttpClient();
+      final request = await client.getUrl(url)
+        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
 
-      return response;
+      client.close();
+      return jsonDecode(responseBody);
     } catch (e, s) {
       debugPrint('An error occured during fetching user info.');
       onError(e, s);
