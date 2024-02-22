@@ -2,22 +2,23 @@ part of '../keycloak_wrapper.dart';
 
 /// Contains all the configurations required for the authentication requests.
 class KeycloakConfig {
-  KeycloakConfig._();
-
-  /// The singleton of this class.
-  static final KeycloakConfig instance = KeycloakConfig._();
-
   /// Initializes the configuration settings, which are essential for interacting with the Keycloak server.
-  factory KeycloakConfig(
-          {required String bundleIdentifier,
-          required String clientId,
-          required String frontendUrl,
-          required String realm}) =>
+  factory KeycloakConfig({
+    required String bundleIdentifier,
+    required String clientId,
+    required String frontendUrl,
+    required String realm,
+  }) =>
       instance
         ..bundleIdentifier = bundleIdentifier
         ..clientId = clientId
         ..frontendUrl = frontendUrl
         ..realm = realm;
+
+  KeycloakConfig._();
+
+  /// The singleton of this class.
+  static final KeycloakConfig instance = KeycloakConfig._();
 
   String? _bundleIdentifier;
 
