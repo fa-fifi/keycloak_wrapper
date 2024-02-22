@@ -12,11 +12,6 @@ class KeycloakWrapper {
 
   late final _streamController = StreamController<bool>();
 
-  /// The stream of the user authentication state.
-  ///
-  /// Returns true if the user is currently logged in.
-  Stream<bool> get authenticationStream => _streamController.stream;
-
   /// Whether this package has been initialized.
   bool isInitialized = false;
 
@@ -27,6 +22,11 @@ class KeycloakWrapper {
   ///
   /// By default, all errors will be printed into the console.
   void Function(Object e, StackTrace s) onError = (e, s) => debugPrint('$e');
+
+  /// The stream of the user authentication state.
+  ///
+  /// Returns true if the user is currently logged in.
+  Stream<bool> get authenticationStream => _streamController.stream;
 
   /// Returns the id token string.
   ///
@@ -42,6 +42,13 @@ class KeycloakWrapper {
   ///
   /// To get the payload, do `jwtDecode(KeycloakWrapper().refreshToken)`.
   String? get refreshToken => tokenResponse?.refreshToken;
+
+  void _assert() {
+    assert(
+      isInitialized,
+      'Make sure the package has been initialized prior to calling this method.',
+    );
+  }
 
   /// Initializes the user authentication state and refresh token.
   Future<void> initialize() async {
@@ -94,10 +101,7 @@ class KeycloakWrapper {
   ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling its methods.',
-    );
+    _assert();
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -134,10 +138,7 @@ class KeycloakWrapper {
   ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling its methods.',
-    );
+    _assert();
     try {
       final request = EndSessionRequest(
         idTokenHint: idToken,
@@ -159,10 +160,7 @@ class KeycloakWrapper {
 
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling its methods.',
-    );
+    _assert();
     try {
       final url = Uri.parse(
         '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo',
