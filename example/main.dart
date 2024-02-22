@@ -13,11 +13,7 @@ void main() async {
     // Display the error message inside a snackbar.
     scaffoldMessengerKey.currentState
       ?..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text('$e'),
-        ),
-      );
+      ..showSnackBar(SnackBar(content: Text('$e')));
   };
   runApp(const MyApp());
 }
@@ -44,10 +40,11 @@ class LoginScreen extends StatelessWidget {
   // Login using the given configuration.
   Future<bool> login() async {
     final config = KeycloakConfig(
-        redirectUrl: '<redirect_url>',
-        clientId: '<client_id>',
-        frontendUrl: '<frontend_url>',
-        realm: '<realm>');
+      redirectUrl: '<redirect_url>',
+      clientId: '<client_id>',
+      frontendUrl: '<frontend_url>',
+      realm: '<realm>',
+    );
 
     // Check if user has successfully logged in.
     final isLoggedIn = await keycloakWrapper.login(config);
@@ -58,10 +55,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Center(
-          child: TextButton(
-            onPressed: login,
-            child: const Text('Login'),
-          ),
+          child: TextButton(onPressed: login, child: const Text('Login')),
         ),
       );
 }
@@ -92,10 +86,7 @@ class HomeScreen extends StatelessWidget {
                   return Text('$name\n$email\n\n');
                 },
               ),
-              TextButton(
-                onPressed: logout,
-                child: const Text('Logout'),
-              ),
+              TextButton(onPressed: logout, child: const Text('Logout')),
             ],
           ),
         ),

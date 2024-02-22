@@ -4,11 +4,11 @@ part of '../keycloak_wrapper.dart';
 ///
 /// It uses [KeycloakConfig] for configuration settings and relies on flutter_appauth package for OAuth2 authorization.
 class KeycloakWrapper {
+  factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
+
   KeycloakWrapper._();
 
   static KeycloakWrapper? _instance = KeycloakWrapper._();
-
-  factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
 
   late final _streamController = StreamController<bool>();
 
@@ -58,18 +58,24 @@ class KeycloakWrapper {
         final isConnected = await hasNetwork();
 
         if (isConnected) {
-          tokenResponse = await _appAuth.token(TokenRequest(
+          tokenResponse = await _appAuth.token(
+            TokenRequest(
               KeycloakConfig.instance.clientId,
               KeycloakConfig.instance.redirectUrl,
               issuer: KeycloakConfig.instance.issuer,
               refreshToken: securedRefreshToken,
-              allowInsecureConnections: true));
+              allowInsecureConnections: true,
+            ),
+          );
 
           await _secureStorage.write(
-              key: _refreshTokenKey, value: refreshToken);
+            key: _refreshTokenKey,
+            value: refreshToken,
+          );
 
           debugPrint(
-              '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.');
+            '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.',
+          );
 
           _streamController.add(tokenResponse.isValid);
         } else {
@@ -88,20 +94,28 @@ class KeycloakWrapper {
   ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
-    assert(isInitialized,
-        'Make sure the package has been initialized prior to calling its methods.');
+    assert(
+      isInitialized,
+      'Make sure the package has been initialized prior to calling its methods.',
+    );
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
-          AuthorizationTokenRequest(config.clientId, config.redirectUrl,
-              issuer: config.issuer,
-              scopes: ['openid', 'profile', 'email', 'offline_access'],
-              promptValues: ['login'],
-              allowInsecureConnections: true));
+        AuthorizationTokenRequest(
+          config.clientId,
+          config.redirectUri,
+          issuer: config.issuer,
+          scopes: ['openid', 'profile', 'email', 'offline_access'],
+          promptValues: ['login'],
+          allowInsecureConnections: true,
+        ),
+      );
 
       if (tokenResponse.isValid) {
         if (refreshToken != null) {
           await _secureStorage.write(
-              key: _refreshTokenKey, value: tokenResponse!.refreshToken);
+            key: _refreshTokenKey,
+            value: tokenResponse!.refreshToken,
+          );
         }
       } else {
         debugPrint('Invalid token response.');
@@ -120,14 +134,17 @@ class KeycloakWrapper {
   ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
-    assert(isInitialized,
-        'Make sure the package has been initialized prior to calling its methods.');
+    assert(
+      isInitialized,
+      'Make sure the package has been initialized prior to calling its methods.',
+    );
     try {
       final request = EndSessionRequest(
-          idTokenHint: idToken,
-          issuer: KeycloakConfig.instance.issuer,
-          postLogoutRedirectUrl: KeycloakConfig.instance.redirectUrl,
-          allowInsecureConnections: true);
+        idTokenHint: idToken,
+        issuer: KeycloakConfig.instance.issuer,
+        postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri,
+        allowInsecureConnections: true,
+      );
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
@@ -142,11 +159,14 @@ class KeycloakWrapper {
 
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
-    assert(isInitialized,
-        'Make sure the package has been initialized prior to calling its methods.');
+    assert(
+      isInitialized,
+      'Make sure the package has been initialized prior to calling its methods.',
+    );
     try {
       final url = Uri.parse(
-          '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo');
+        '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo',
+      );
       final client = HttpClient();
       final request = await client.getUrl(url)
         ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
@@ -154,7 +174,7 @@ class KeycloakWrapper {
       final responseBody = await response.transform(utf8.decoder).join();
 
       client.close();
-      return jsonDecode(responseBody);
+      return jsonDecode(responseBody) as Map<String, dynamic>?;
     } catch (e, s) {
       debugPrint('An error occured during fetching user info.');
       onError(e, s);
