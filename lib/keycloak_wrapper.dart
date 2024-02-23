@@ -1,8 +1,9 @@
-/// The primary library of this package contains all authentication methods.
+/// The primary library of this package containing all the authentication methods.
 library;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:flutter/material.dart';

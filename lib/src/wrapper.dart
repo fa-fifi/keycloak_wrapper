@@ -12,21 +12,28 @@ class KeycloakWrapper {
 
   late final _streamController = StreamController<bool>();
 
-  /// The stream of the user authentication state.
-  ///
-  /// Returns true if the user is currently logged in.
-  Stream<bool> get authenticationStream => _streamController.stream;
-
   /// Whether this package has been initialized.
   bool isInitialized = false;
-
-  /// The details from making a successful token exchange.
-  TokenResponse? tokenResponse;
 
   /// Called whenever an error gets caught.
   ///
   /// By default, all errors will be printed into the console.
-  void Function(Object e, StackTrace s) onError = (e, s) => debugPrint('$e');
+  void Function(Object e, StackTrace s) onError = (e, s) => developer.log(
+        "Oops, something went wrong! ಠ_ಠ\n"
+        "If this keeps happening, feel free to report this issue on our Github repository at\n"
+        "https://github.com/fa-fifi/keycloak-wrapper/issues.",
+        name: 'keycloak_wrapper',
+        error: e,
+        stackTrace: s,
+      );
+
+  /// The details from making a successful token exchange.
+  TokenResponse? tokenResponse;
+
+  /// The stream of the user authentication state.
+  ///
+  /// Returns true if the user is currently logged in.
+  Stream<bool> get authenticationStream => _streamController.stream;
 
   /// Returns the id token string.
   ///
@@ -42,6 +49,13 @@ class KeycloakWrapper {
   ///
   /// To get the payload, do `jwtDecode(KeycloakWrapper().refreshToken)`.
   String? get refreshToken => tokenResponse?.refreshToken;
+
+  void _assert() {
+    assert(
+      isInitialized,
+      'Make sure the package has been initialized prior to calling this method.',
+    );
+  }
 
   /// Initializes the user authentication state and refresh token.
   Future<void> initialize() async {
@@ -85,7 +99,6 @@ class KeycloakWrapper {
 
       isInitialized = true;
     } catch (e, s) {
-      debugPrint('An error occured during initialization.');
       onError(e, s);
     }
   }
@@ -94,10 +107,7 @@ class KeycloakWrapper {
   ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling its methods.',
-    );
+    _assert();
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -124,7 +134,6 @@ class KeycloakWrapper {
       _streamController.add(tokenResponse.isValid);
       return tokenResponse.isValid;
     } catch (e, s) {
-      debugPrint('An error occured during logging user in.');
       onError(e, s);
       return false;
     }
@@ -134,10 +143,7 @@ class KeycloakWrapper {
   ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling its methods.',
-    );
+    _assert();
     try {
       final request = EndSessionRequest(
         idTokenHint: idToken,
@@ -151,7 +157,6 @@ class KeycloakWrapper {
       _streamController.add(false);
       return true;
     } catch (e, s) {
-      debugPrint('An error occured during logging user out.');
       onError(e, s);
       return false;
     }
@@ -159,10 +164,7 @@ class KeycloakWrapper {
 
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling its methods.',
-    );
+    _assert();
     try {
       final url = Uri.parse(
         '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo',
@@ -176,7 +178,6 @@ class KeycloakWrapper {
       client.close();
       return jsonDecode(responseBody) as Map<String, dynamic>?;
     } catch (e, s) {
-      debugPrint('An error occured during fetching user info.');
       onError(e, s);
       return null;
     }

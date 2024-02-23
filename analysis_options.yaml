@@ -1,1 +1,1 @@
-include: package:lint/strict.yaml
+include: package:lint/package.yaml
