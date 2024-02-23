@@ -15,13 +15,20 @@ class KeycloakWrapper {
   /// Whether this package has been initialized.
   bool isInitialized = false;
 
-  /// The details from making a successful token exchange.
-  TokenResponse? tokenResponse;
-
   /// Called whenever an error gets caught.
   ///
   /// By default, all errors will be printed into the console.
-  void Function(Object e, StackTrace s) onError = (e, s) => debugPrint('$e');
+  void Function(Object e, StackTrace s) onError = (e, s) => developer.log(
+        "Oops, something went wrong! ಠ_ಠ\n"
+        "If this keeps happening, feel free to report this issue on our Github repository at\n"
+        "https://github.com/fa-fifi/keycloak-wrapper/issues.",
+        name: 'keycloak_wrapper',
+        error: e,
+        stackTrace: s,
+      );
+
+  /// The details from making a successful token exchange.
+  TokenResponse? tokenResponse;
 
   /// The stream of the user authentication state.
   ///
@@ -92,7 +99,6 @@ class KeycloakWrapper {
 
       isInitialized = true;
     } catch (e, s) {
-      debugPrint('An error occured during initialization.');
       onError(e, s);
     }
   }
@@ -128,7 +134,6 @@ class KeycloakWrapper {
       _streamController.add(tokenResponse.isValid);
       return tokenResponse.isValid;
     } catch (e, s) {
-      debugPrint('An error occured during logging user in.');
       onError(e, s);
       return false;
     }
@@ -152,7 +157,6 @@ class KeycloakWrapper {
       _streamController.add(false);
       return true;
     } catch (e, s) {
-      debugPrint('An error occured during logging user out.');
       onError(e, s);
       return false;
     }
@@ -174,7 +178,6 @@ class KeycloakWrapper {
       client.close();
       return jsonDecode(responseBody) as Map<String, dynamic>?;
     } catch (e, s) {
-      debugPrint('An error occured during fetching user info.');
       onError(e, s);
       return null;
     }
