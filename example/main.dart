@@ -40,10 +40,12 @@ class LoginScreen extends StatelessWidget {
   // Login using the given configuration.
   Future<bool> login() async {
     final config = KeycloakConfig(
-      redirectUrl: '<redirect_url>',
+      bundleIdentifier: '<bundle_identifier>', // <-- This is optional.
       clientId: '<client_id>',
       frontendUrl: '<frontend_url>',
       realm: '<realm>',
+      redirectUrl:
+          '<redirect_url>', // <-- In case this is not provided, it will be default to '$bundleIdentifier://login-callback'.
     );
 
     // Check if user has successfully logged in.

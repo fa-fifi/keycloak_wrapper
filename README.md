@@ -98,10 +98,12 @@ Afterwards, create a button somewhere inside your login screen and use the follo
 ```dart
 Future<void> login() async {
     final config = KeycloakConfig(
-        bundleIdentifier: '<bundle_identifier>',
-        clientId: '<client_id>',
-        frontendUrl: '<frontend_url>',
-        realm: '<realm>');
+      bundleIdentifier: '<bundle_identifier>', // <-- This is optional.
+      clientId: '<client_id>',
+      frontendUrl: '<frontend_url>',
+      realm: '<realm>',
+      redirectUrl: '<redirect_url>', // <-- In case this is not provided, it will be default to '$bundleIdentifier://login-callback'.
+    );
 
     await keycloakWrapper.login(config);
   }

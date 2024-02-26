@@ -51,10 +51,10 @@ class KeycloakWrapper {
   String? get refreshToken => tokenResponse?.refreshToken;
 
   void _assert() {
-    assert(
-      isInitialized,
-      'Make sure the package has been initialized prior to calling this method.',
-    );
+    const message =
+        'Make sure the package has been initialized prior to calling this method.';
+
+    assert(isInitialized, message);
   }
 
   /// Initializes the user authentication state and refresh token.
