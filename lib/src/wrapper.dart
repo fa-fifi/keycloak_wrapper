@@ -112,7 +112,7 @@ class KeycloakWrapper {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
           config.clientId,
-          config.redirectUri,
+          config.redirectUrl,
           issuer: config.issuer,
           scopes: ['openid', 'profile', 'email', 'offline_access'],
           promptValues: ['login'],
@@ -148,7 +148,7 @@ class KeycloakWrapper {
       final request = EndSessionRequest(
         idTokenHint: idToken,
         issuer: KeycloakConfig.instance.issuer,
-        postLogoutRedirectUrl: KeycloakConfig.instance.redirectUri,
+        postLogoutRedirectUrl: KeycloakConfig.instance.redirectUrl,
         allowInsecureConnections: true,
       );
 
