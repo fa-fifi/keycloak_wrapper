@@ -11,7 +11,7 @@ class KeycloakConfig {
     String? redirectUrl,
   }) {
     assert(bundleIdentifier != null || redirectUrl != null,
-        'The value of [bundleIdentifier] will be used in case there is no [redirectUrl] given, so one of them needs to be provided.');
+        'The value of `bundleIdentifier` will be used in case there is no `redirectUrl` given, so one of them needs to be provided.');
     return instance
       ..clientId = clientId
       ..frontendUrl = frontendUrl
