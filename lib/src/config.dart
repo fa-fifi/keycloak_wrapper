@@ -4,25 +4,23 @@ part of '../keycloak_wrapper.dart';
 class KeycloakConfig {
   /// Initializes the configuration settings, which are essential for interacting with the Keycloak server.
   factory KeycloakConfig({
-    String? bundleIdentifier,
+    required String bundleIdentifier,
     required String clientId,
     required String frontendUrl,
     required String realm,
-    String? redirectUrl,
-  }) {
-    assert(bundleIdentifier != null || redirectUrl != null,
-        'The value of `bundleIdentifier` will be used in case there is no `redirectUrl` given, so one of them needs to be provided.');
-    return instance
-      ..clientId = clientId
-      ..frontendUrl = frontendUrl
-      ..realm = realm
-      ..redirectUrl = redirectUrl ?? '$bundleIdentifier://login-callback';
-  }
+  }) =>
+      instance
+        ..bundleIdentifier = bundleIdentifier
+        ..clientId = clientId
+        ..frontendUrl = frontendUrl
+        ..realm = realm;
 
   KeycloakConfig._();
 
   /// The singleton of this class.
   static final KeycloakConfig instance = KeycloakConfig._();
+
+  String? _bundleIdentifier;
 
   String? _clientId;
 
@@ -30,7 +28,8 @@ class KeycloakConfig {
 
   String? _realm;
 
-  String? _redirectUrl;
+  /// The application unique identifier.
+  String get bundleIdentifier => _bundleIdentifier ?? '';
 
   /// The alphanumeric ID string that is used in OIDC requests and in the Keycloak database to identify the client.
   String get clientId => _clientId ?? '';
@@ -42,10 +41,16 @@ class KeycloakConfig {
   String get realm => _realm ?? '';
 
   /// The callback URI after the user has been successfully authorized and granted an access token.
-  String get redirectUrl => _redirectUrl ?? '';
+  String get redirectUri => '$_bundleIdentifier://login-callback';
 
   /// The base URI for the authorization server.
   String get issuer => '$frontendUrl/realms/$realm';
+
+  set bundleIdentifier(String? value) {
+    if (value == null) return;
+    _bundleIdentifier = value;
+    _secureStorage.write(key: _bundleIdentifierKey, value: value);
+  }
 
   set clientId(String? value) {
     if (value == null) return;
@@ -65,17 +70,11 @@ class KeycloakConfig {
     _secureStorage.write(key: _realmKey, value: value);
   }
 
-  set redirectUrl(String? value) {
-    if (value == null) return;
-    _redirectUrl = value;
-    _secureStorage.write(key: _redirectUrlKey, value: value);
-  }
-
   /// Initializes Keycloak local configuration.
   Future<void> initialize() async {
+    bundleIdentifier = await _secureStorage.read(key: _bundleIdentifierKey);
     clientId = await _secureStorage.read(key: _clientIdKey);
     frontendUrl = await _secureStorage.read(key: _frontendUrlKey);
     realm = await _secureStorage.read(key: _realmKey);
-    redirectUrl = await _secureStorage.read(key: _redirectUrlKey);
   }
 }

@@ -102,7 +102,6 @@ Future<void> login() async {
       clientId: '<client_id>',
       frontendUrl: '<frontend_url>',
       realm: '<realm>',
-      redirectUrl: '<redirect_url>', // <-- To override the default redirect url. (Optional)
     );
 
     await keycloakWrapper.login(config);
