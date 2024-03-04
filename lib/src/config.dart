@@ -8,12 +8,18 @@ class KeycloakConfig {
     required String clientId,
     required String frontendUrl,
     required String realm,
-  }) =>
-      instance
-        ..bundleIdentifier = bundleIdentifier
-        ..clientId = clientId
-        ..frontendUrl = frontendUrl
-        ..realm = realm;
+  }) {
+    assert(
+      RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$')
+          .hasMatch(bundleIdentifier),
+      'Invalid bundle identifier. Must not contain characters that are not allowed inside a hostname, such as spaces, underscores, etc.',
+    );
+    return instance
+      ..bundleIdentifier = bundleIdentifier
+      ..clientId = clientId
+      ..frontendUrl = frontendUrl
+      ..realm = realm;
+  }
 
   KeycloakConfig._();
 
