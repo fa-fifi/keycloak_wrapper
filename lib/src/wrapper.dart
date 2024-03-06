@@ -12,8 +12,7 @@ class KeycloakWrapper {
 
   late final _streamController = StreamController<bool>();
 
-  /// Whether this package has been initialized.
-  bool isInitialized = false;
+  bool _isInitialized = false;
 
   /// Called whenever an error gets caught.
   ///
@@ -35,6 +34,9 @@ class KeycloakWrapper {
   /// Returns true if the user is currently logged in.
   Stream<bool> get authenticationStream => _streamController.stream;
 
+  /// Whether this package has been initialized.
+  bool get isInitialized => _isInitialized;
+
   /// Returns the id token string.
   ///
   /// To get the payload, do `jwtDecode(KeycloakWrapper().idToken)`.
@@ -54,7 +56,7 @@ class KeycloakWrapper {
     const message =
         'Make sure the package has been initialized prior to calling this method.';
 
-    assert(isInitialized, message);
+    assert(_isInitialized, message);
   }
 
   /// Initializes the user authentication state and refresh token.
@@ -97,7 +99,7 @@ class KeycloakWrapper {
         }
       }
 
-      isInitialized = true;
+      _isInitialized = true;
     } catch (e, s) {
       onError(e, s);
     }
