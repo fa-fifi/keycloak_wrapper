@@ -19,8 +19,8 @@ class KeycloakWrapper {
   /// By default, all errors will be printed into the console.
   void Function(Object e, StackTrace s) onError = (e, s) => developer.log(
         "Oops, something went wrong! ಠ_ಠ\n"
-        "If this keeps happening, feel free to report this issue on our Github repository at\n"
-        "https://github.com/fa-fifi/keycloak-wrapper/issues.",
+        "If you need help, feel free to open a discussion on our Github repository at\n"
+        "https://github.com/fa-fifi/keycloak-wrapper/discussions.",
         name: 'keycloak_wrapper',
         error: e,
         stackTrace: s,
