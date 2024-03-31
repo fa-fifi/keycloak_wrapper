@@ -20,7 +20,7 @@ class KeycloakWrapper {
   void Function(Object e, StackTrace s) onError = (e, s) => developer.log(
         "Oops, something went wrong! ಠ_ಠ\n"
         "If you need help, feel free to open a discussion on our Github repository at\n"
-        "https://github.com/fa-fifi/keycloak-wrapper/discussions.",
+        "https://github.com/fa-fifi/keycloak_wrapper/discussions.",
         name: 'keycloak_wrapper',
         error: e,
         stackTrace: s,

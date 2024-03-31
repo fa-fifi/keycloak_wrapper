@@ -142,12 +142,12 @@ You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example
 Contributions are welcome! However, please make sure to follow the guidelines below to avoid unnecessary waste of time and resources.
 
 - **Found a bug?**
-<br> Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak-wrapper/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+<br> Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak_wrapper/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
 - **Need some help?**
-<br> As of now, there isn't any discussion yet regarding any issue with the package, but feel free to open up a new one on Github under [Discussions](https://github.com/fa-fifi/keycloak-wrapper/discussions). I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
+<br> As of now, there isn't any discussion yet regarding any issue with the package, but feel free to open up a new one on Github under [Discussions](https://github.com/fa-fifi/keycloak_wrapper/discussions). I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
 
 - **Want to contribute?**
-<br> Since I am the only maintainer of this package, frequent bug fixes or updates might not be feasible. Therefore, any [pull requests](https://github.com/fa-fifi/keycloak-wrapper/pulls) are greatly appreciated! Please ensure that the PR description clearly outlines both the problem and its proposed solution. If applicable, include the relevant issue number in the description.
+<br> Since I am the only maintainer of this package, frequent bug fixes or updates might not be feasible. Therefore, any [pull requests](https://github.com/fa-fifi/keycloak_wrapper/pulls) are greatly appreciated! Please ensure that the PR description clearly outlines both the problem and its proposed solution. If applicable, include the relevant issue number in the description.
 
 Thanks! ❤️
