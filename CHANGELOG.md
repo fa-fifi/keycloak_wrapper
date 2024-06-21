@@ -4,14 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.2] - 2024/4/01
+## [1.2.0] - 2024/6/22
+
+- Convert into a dart package, which no longer depends on the Flutter SDK.
+- Update dependencies.
+- Update CI/CD pipelines.
+
+## [1.1.2] - 2024/4/1
 
 - Rename repository.
 
 ## [1.1.1] - 2024/3/20
 
 - Update the default error message.
-- Make `isInitialized` property as private.
+- Make `isInitialized` variable as private.
 
 ## [1.1.0] - 2024/3/04
 
