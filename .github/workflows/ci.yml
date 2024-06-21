@@ -6,8 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Setup flutter environment
         uses: subosito/flutter-action@v2
         with:
@@ -15,6 +14,8 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
       - name: Analyze code
         continue-on-error: true
         run: flutter analyze

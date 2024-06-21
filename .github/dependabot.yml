@@ -1,19 +1,15 @@
 version: 2
 updates:
-  # Mantain dependencies for Github Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️ "
-
-  # Mantain dependencies for pub
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "sunday"
     commit-message:
       prefix: "⬆️ "
     versioning-strategy: increase
