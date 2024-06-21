@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:keycloak_wrapper/keycloak_wrapper.dart';
 
