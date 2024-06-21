@@ -66,7 +66,7 @@ class KeycloakWrapper {
           await _secureStorage.read(key: _refreshTokenKey);
 
       if (securedRefreshToken == null) {
-        debugPrint('No refresh token found.');
+        developer.log('No refresh token found.');
         _streamController.add(false);
       } else {
         await KeycloakConfig.instance.initialize();
@@ -89,7 +89,7 @@ class KeycloakWrapper {
             value: refreshToken,
           );
 
-          debugPrint(
+          developer.log(
             '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.',
           );
 
@@ -130,7 +130,7 @@ class KeycloakWrapper {
           );
         }
       } else {
-        debugPrint('Invalid token response.');
+        developer.log('Invalid token response.');
       }
 
       _streamController.add(tokenResponse.isValid);

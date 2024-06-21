@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

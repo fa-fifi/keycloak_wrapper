@@ -20,7 +20,6 @@ jobs:
         with:
           accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
           refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
-          flutter: true
           force: true
           format: true
           skipTests: true

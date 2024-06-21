@@ -1,4 +1,4 @@
-name: Close Stale Issues and PRs
+name: Stale Bot
 
 on:
   schedule:

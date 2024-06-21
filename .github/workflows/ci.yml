@@ -7,18 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup flutter environment
-        uses: subosito/flutter-action@v2
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
         with:
-          channel: 'stable'
-          cache: true
+          sdk: stable
       - name: Install dependencies
-        run: flutter pub get
+        run: dart pub get
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
       - name: Analyze code
         continue-on-error: true
-        run: flutter analyze
+        run: dart analyze
       - name: Run tests
         if: success() || failure()
-        run: flutter test
+        run: dart test
