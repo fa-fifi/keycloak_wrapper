@@ -8,7 +8,7 @@ class KeycloakWrapper {
 
   KeycloakWrapper._();
 
-  static KeycloakWrapper? _instance = KeycloakWrapper._();
+  static KeycloakWrapper? _instance;
 
   late final _streamController = StreamController<bool>();
 
