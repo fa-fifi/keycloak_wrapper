@@ -24,12 +24,12 @@ jobs:
           force: true
           format: true
           skipTests: true
-          
+
   release:
     runs-on: ubuntu-latest
     permissions: write-all
     needs: publish
-    if: needs.publish.outputs.success == 'true'
+    if: needs.publish.outputs.success == 'true' && !contains(needs.publish.outputs.version, '-')
     steps:
       - uses: actions/checkout@v4
       - name: Extract release notes
