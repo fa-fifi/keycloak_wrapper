@@ -119,6 +119,7 @@ class KeycloakWrapper {
           scopes: ['openid', 'profile', 'email', 'offline_access'],
           promptValues: ['login'],
           allowInsecureConnections: true,
+          responseMode: config.responseMode,
         ),
       );
 

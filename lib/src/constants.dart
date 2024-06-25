@@ -8,3 +8,4 @@ const _clientIdKey = 'keycloak-client-id';
 const _frontendUrlKey = 'keycloak-frontend-url';
 const _realmKey = 'keycloak-realm';
 const _refreshTokenKey = 'keycloak-refresh-token';
+const _responseModeKey = 'keycloak-response-mode';

@@ -8,6 +8,7 @@ class KeycloakConfig {
     required String clientId,
     required String frontendUrl,
     required String realm,
+    String? responseMode,
   }) {
     assert(
       RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$')
@@ -18,7 +19,8 @@ class KeycloakConfig {
       ..bundleIdentifier = bundleIdentifier
       ..clientId = clientId
       ..frontendUrl = frontendUrl
-      ..realm = realm;
+      ..realm = realm
+      ..responseMode = responseMode;
   }
 
   KeycloakConfig._();
@@ -34,6 +36,8 @@ class KeycloakConfig {
 
   String? _realm;
 
+  String? _responseMode;
+
   /// The application unique identifier.
   String get bundleIdentifier => _bundleIdentifier ?? '';
 
@@ -45,6 +49,9 @@ class KeycloakConfig {
 
   /// The realm name.
   String get realm => _realm ?? '';
+
+  /// The mechanism to be used for returning Authorization Response parameters from the Authorization Endpoint.
+  String get responseMode => _responseMode ?? '';
 
   /// The callback URI after the user has been successfully authorized and granted an access token.
   String get redirectUri => '$_bundleIdentifier://login-callback';
@@ -76,11 +83,18 @@ class KeycloakConfig {
     _secureStorage.write(key: _realmKey, value: value);
   }
 
+  set responseMode(String? value) {
+    if (value == null) return;
+    _responseMode = value;
+    _secureStorage.write(key: _responseModeKey, value: value);
+  }
+
   /// Initializes Keycloak local configuration.
   Future<void> initialize() async {
     bundleIdentifier = await _secureStorage.read(key: _bundleIdentifierKey);
     clientId = await _secureStorage.read(key: _clientIdKey);
     frontendUrl = await _secureStorage.read(key: _frontendUrlKey);
     realm = await _secureStorage.read(key: _realmKey);
+    responseMode = await _secureStorage.read(key: _responseModeKey);
   }
 }
