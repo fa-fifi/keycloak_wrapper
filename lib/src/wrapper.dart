@@ -80,7 +80,8 @@ class KeycloakWrapper {
               KeycloakConfig.instance.redirectUri,
               issuer: KeycloakConfig.instance.issuer,
               refreshToken: securedRefreshToken,
-              allowInsecureConnections: true,
+              allowInsecureConnections:
+                  !KeycloakConfig.instance.frontendUrl.startsWith('https://'),
             ),
           );
 
