@@ -38,17 +38,17 @@ class KeycloakWrapper {
 
   /// Returns the id token string.
   ///
-  /// To get the payload, do `jwtDecode(KeycloakWrapper().idToken)`.
+  /// To get the payload, do `JWT.decode(KeycloakWrapper().idToken).payload`.
   String? get idToken => tokenResponse?.idToken;
 
   /// Returns the access token string.
   ///
-  /// To get the payload, do `jwtDecode(KeycloakWrapper().accessToken)`.
+  /// To get the payload, do `JWT.decode(KeycloakWrapper().accessToken).payload`.
   String? get accessToken => tokenResponse?.accessToken;
 
   /// Returns the refresh token string.
   ///
-  /// To get the payload, do `jwtDecode(KeycloakWrapper().refreshToken)`.
+  /// To get the payload, do `JWT.decode(KeycloakWrapper().refreshToken).payload`.
   String? get refreshToken => tokenResponse?.refreshToken;
 
   void _assert() {
