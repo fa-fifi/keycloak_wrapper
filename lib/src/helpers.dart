@@ -18,10 +18,14 @@ Map<String, dynamic>? jwtDecode(String? source) {
 /// Whether there is network connectivity.
 Future<bool> hasNetwork() async {
   try {
-    final result = await InternetAddress.lookup('google.com');
+    final result = await InternetAddress.lookup('example.com');
 
     return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
   } on SocketException {
+    developer.log(
+      'Failed to connect to the internet.',
+      name: 'keycloak_wrapper',
+    );
     return false;
   }
 }
