@@ -4,10 +4,6 @@ part of '../keycloak_wrapper.dart';
 ///
 /// It uses [KeycloakConfig] for configuration settings and relies on flutter_appauth package for OAuth2 authorization.
 class KeycloakWrapper {
-  factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
-
-  KeycloakWrapper._();
-
   static KeycloakWrapper? _instance;
 
   late final _streamController = StreamController<bool>();
@@ -28,34 +24,52 @@ class KeycloakWrapper {
   /// The details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
-  /// The stream of the user authentication state.
-  ///
-  /// Returns true if the user is currently logged in.
-  Stream<bool> get authenticationStream => _streamController.stream;
+  factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
 
-  /// Whether this package has been initialized.
-  bool get isInitialized => _isInitialized;
-
-  /// Returns the id token string.
-  ///
-  /// To get the payload, do `JWT.decode(KeycloakWrapper().idToken).payload`.
-  String? get idToken => tokenResponse?.idToken;
+  KeycloakWrapper._();
 
   /// Returns the access token string.
   ///
   /// To get the payload, do `JWT.decode(KeycloakWrapper().accessToken).payload`.
   String? get accessToken => tokenResponse?.accessToken;
 
+  /// The stream of the user authentication state.
+  ///
+  /// Returns true if the user is currently logged in.
+  Stream<bool> get authenticationStream => _streamController.stream;
+
+  /// Returns the id token string.
+  ///
+  /// To get the payload, do `JWT.decode(KeycloakWrapper().idToken).payload`.
+  String? get idToken => tokenResponse?.idToken;
+
+  /// Whether this package has been initialized.
+  bool get isInitialized => _isInitialized;
+
   /// Returns the refresh token string.
   ///
   /// To get the payload, do `JWT.decode(KeycloakWrapper().refreshToken).payload`.
   String? get refreshToken => tokenResponse?.refreshToken;
 
-  void _assert() {
-    const message =
-        'Make sure the package has been initialized prior to calling this method.';
+  /// Retrieves the current user information.
+  Future<Map<String, dynamic>?> getUserInfo() async {
+    _assertInitialization();
+    try {
+      final url = Uri.parse(
+        '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo',
+      );
+      final client = HttpClient();
+      final request = await client.getUrl(url)
+        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
 
-    assert(_isInitialized, message);
+      client.close();
+      return jsonDecode(responseBody) as Map<String, dynamic>?;
+    } catch (e, s) {
+      onError('Failed to fetch user info.', e, s);
+      return null;
+    }
   }
 
   /// Initializes the user authentication state and refresh token.
@@ -110,7 +124,7 @@ class KeycloakWrapper {
   ///
   /// Returns true if login is successful.
   Future<bool> login(KeycloakConfig config) async {
-    _assert();
+    _assertInitialization();
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -146,7 +160,7 @@ class KeycloakWrapper {
   ///
   /// Returns true if logout is successful.
   Future<bool> logout() async {
-    _assert();
+    _assertInitialization();
     try {
       final request = EndSessionRequest(
         idTokenHint: idToken,
@@ -165,24 +179,10 @@ class KeycloakWrapper {
     }
   }
 
-  /// Retrieves the current user information.
-  Future<Map<String, dynamic>?> getUserInfo() async {
-    _assert();
-    try {
-      final url = Uri.parse(
-        '${KeycloakConfig.instance.issuer}/protocol/openid-connect/userinfo',
-      );
-      final client = HttpClient();
-      final request = await client.getUrl(url)
-        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
-
-      client.close();
-      return jsonDecode(responseBody) as Map<String, dynamic>?;
-    } catch (e, s) {
-      onError('Failed to fetch user info.', e, s);
-      return null;
-    }
+  void _assertInitialization() {
+    assert(
+      _isInitialized,
+      'Make sure the package has been initialized prior to calling this method.',
+    );
   }
 }
