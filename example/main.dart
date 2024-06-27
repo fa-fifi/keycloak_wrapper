@@ -9,11 +9,11 @@ void main() async {
   // Initialize the plugin at the start of your app.
   await keycloakWrapper.initialize();
   // Listen to the errors caught by the plugin.
-  keycloakWrapper.onError = (e, s) {
+  keycloakWrapper.onError = (message, _, __) {
     // Display the error message inside a snackbar.
     scaffoldMessengerKey.currentState
       ?..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('$e')));
+      ..showSnackBar(SnackBar(content: Text(message)));
   };
   runApp(const MyApp());
 }

@@ -17,14 +17,13 @@ class KeycloakWrapper {
   /// Called whenever an error gets caught.
   ///
   /// By default, all errors will be printed into the console.
-  void Function(Object e, StackTrace s) onError = (e, s) => developer.log(
-        "Oops, something went wrong! ಠ_ಠ\n"
-        "If you need help, feel free to open a discussion on our Github repository at\n"
-        "https://github.com/fa-fifi/keycloak_wrapper/discussions.",
-        name: 'keycloak_wrapper',
-        error: e,
-        stackTrace: s,
-      );
+  void Function(String message, Object error, StackTrace stackTrace) onError =
+      (message, error, stackTrace) => developer.log(
+            message,
+            name: 'keycloak_wrapper',
+            error: error,
+            stackTrace: stackTrace,
+          );
 
   /// The details from making a successful token exchange.
   TokenResponse? tokenResponse;
@@ -66,7 +65,7 @@ class KeycloakWrapper {
           await _secureStorage.read(key: _refreshTokenKey);
 
       if (securedRefreshToken == null) {
-        developer.log('No refresh token found.');
+        developer.log('No refresh token found.', name: 'keycloak_wrapper');
         _streamController.add(false);
       } else {
         await KeycloakConfig.instance.initialize();
@@ -92,6 +91,7 @@ class KeycloakWrapper {
 
           developer.log(
             '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.',
+            name: 'keycloak_wrapper',
           );
 
           _streamController.add(tokenResponse.isValid);
@@ -102,7 +102,7 @@ class KeycloakWrapper {
 
       _isInitialized = true;
     } catch (e, s) {
-      onError(e, s);
+      onError('Failed to initialize plugin.', e, s);
     }
   }
 
@@ -131,13 +131,13 @@ class KeycloakWrapper {
           );
         }
       } else {
-        developer.log('Invalid token response.');
+        developer.log('Invalid token response.', name: 'keycloak_wrapper');
       }
 
       _streamController.add(tokenResponse.isValid);
       return tokenResponse.isValid;
     } catch (e, s) {
-      onError(e, s);
+      onError('Failed to login.', e, s);
       return false;
     }
   }
@@ -160,7 +160,7 @@ class KeycloakWrapper {
       _streamController.add(false);
       return true;
     } catch (e, s) {
-      onError(e, s);
+      onError('Failed to logout.', e, s);
       return false;
     }
   }
@@ -181,7 +181,7 @@ class KeycloakWrapper {
       client.close();
       return jsonDecode(responseBody) as Map<String, dynamic>?;
     } catch (e, s) {
-      onError(e, s);
+      onError('Failed to fetch user info.', e, s);
       return null;
     }
   }
