@@ -9,22 +9,6 @@ class JWT {
   JWT.decode(this.token)
       : assert(token.split('.').length == 3, 'Invalid token.');
 
-  /// Returns the token payload.
-  ///
-  /// Throws [FormatException] if the payload is invalid.
-  Map<String, dynamic> get payload {
-    try {
-      final payloadBase64 = token.split('.')[1];
-      final normalizedPayload = base64Url.normalize(payloadBase64);
-      final payloadString = utf8.decode(base64Url.decode(normalizedPayload));
-      final decodedPayload = jsonDecode(payloadString) as Map<String, dynamic>;
-
-      return decodedPayload;
-    } catch (_) {
-      throw const FormatException('Invalid payload.');
-    }
-  }
-
   /// Returns the token expiration date.
   ///
   /// Throws [FormatException] if the payload is invalid.
@@ -51,6 +35,22 @@ class JWT {
 
     if (iat == null) return null;
     return DateTime.fromMillisecondsSinceEpoch(iat * 1000);
+  }
+
+  /// Returns the token payload.
+  ///
+  /// Throws [FormatException] if the payload is invalid.
+  Map<String, dynamic> get payload {
+    try {
+      final payloadBase64 = token.split('.')[1];
+      final normalizedPayload = base64Url.normalize(payloadBase64);
+      final payloadString = utf8.decode(base64Url.decode(normalizedPayload));
+      final decodedPayload = jsonDecode(payloadString) as Map<String, dynamic>;
+
+      return decodedPayload;
+    } catch (_) {
+      throw const FormatException('Invalid payload.');
+    }
   }
 
   /// Returns the remaining time until expiry date.
