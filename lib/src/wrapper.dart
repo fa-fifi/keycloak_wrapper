@@ -73,46 +73,10 @@ class KeycloakWrapper {
     }
   }
 
-  /// Initializes the user authentication state and refresh token.
+  /// Initializes the user authentication state and refreshes the token.
   Future<void> initialize() async {
     try {
-      final securedRefreshToken =
-          await _secureStorage.read(key: _refreshTokenKey);
-
-      if (securedRefreshToken == null) {
-        developer.log('No refresh token found.', name: 'keycloak_wrapper');
-        _streamController.add(false);
-      } else {
-        final isConnected = await hasNetwork();
-
-        if (isConnected) {
-          tokenResponse = await _appAuth.token(
-            TokenRequest(
-              _keycloakConfig.clientId,
-              _keycloakConfig.redirectUri,
-              issuer: _keycloakConfig.issuer,
-              refreshToken: securedRefreshToken,
-              allowInsecureConnections:
-                  _keycloakConfig.allowInsecureConnections,
-            ),
-          );
-
-          await _secureStorage.write(
-            key: _refreshTokenKey,
-            value: refreshToken,
-          );
-
-          developer.log(
-            '${tokenResponse.isValid ? 'Valid' : 'Invalid'} refresh token.',
-            name: 'keycloak_wrapper',
-          );
-
-          _streamController.add(tokenResponse.isValid);
-        } else {
-          _streamController.add(true);
-        }
-      }
-
+      await refreshAccessToken();
       _isInitialized = true;
     } catch (e, s) {
       onError('Failed to initialize plugin.', e, s);
@@ -140,7 +104,7 @@ class KeycloakWrapper {
         if (refreshToken != null) {
           await _secureStorage.write(
             key: _refreshTokenKey,
-            value: tokenResponse!.refreshToken,
+            value: refreshToken,
           );
         }
       } else {
@@ -175,6 +139,51 @@ class KeycloakWrapper {
     } catch (e, s) {
       onError('Failed to logout.', e, s);
       return false;
+    }
+  }
+
+  /// Requests a new access token before it expires.
+  Future<void> refreshAccessToken() async {
+    final securedRefreshToken =
+        await _secureStorage.read(key: _refreshTokenKey);
+
+    if (securedRefreshToken == null) {
+      developer.log('No refresh token found.', name: 'keycloak_wrapper');
+      _streamController.add(false);
+    } else if (JWT.decode(securedRefreshToken).isExpired) {
+      developer.log('Expired refresh token', name: 'keycloak_wrapper');
+      _streamController.add(false);
+    } else {
+      final isConnected = await hasNetwork();
+
+      if (isConnected) {
+        tokenResponse = await _appAuth.token(
+          TokenRequest(
+            _keycloakConfig.clientId,
+            _keycloakConfig.redirectUri,
+            issuer: _keycloakConfig.issuer,
+            scopes: ['openid', 'profile', 'email', 'offline_access'],
+            refreshToken: securedRefreshToken,
+            allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+          ),
+        );
+
+        if (tokenResponse.isValid) {
+          if (refreshToken != null) {
+            await _secureStorage.write(
+              key: _refreshTokenKey,
+              value: refreshToken,
+            );
+          }
+        } else {
+          developer.log('Invalid token response.', name: 'keycloak_wrapper');
+        }
+
+        _streamController.add(tokenResponse.isValid);
+      } else {
+        developer.log('No internet connection.', name: 'keycloak_wrapper');
+        _streamController.add(true);
+      }
     }
   }
 
