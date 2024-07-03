@@ -76,7 +76,7 @@ class KeycloakWrapper {
   /// Initializes the user authentication state and refreshes the token.
   Future<void> initialize() async {
     try {
-      await refreshAccessToken();
+      await updateToken();
       _isInitialized = true;
     } catch (e, s) {
       onError('Failed to initialize plugin.', e, s);
@@ -143,7 +143,7 @@ class KeycloakWrapper {
   }
 
   /// Requests a new access token before it expires.
-  Future<void> refreshAccessToken() async {
+  Future<void> updateToken() async {
     final securedRefreshToken =
         await _secureStorage.read(key: _refreshTokenKey);
 
