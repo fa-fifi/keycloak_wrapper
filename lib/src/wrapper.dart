@@ -10,7 +10,7 @@ class KeycloakWrapper {
 
   final KeycloakConfig _keycloakConfig;
 
-  late final _streamController = StreamController<bool>();
+  late final _streamController = StreamController<bool>.broadcast();
 
   /// Called whenever an error gets caught.
   ///
