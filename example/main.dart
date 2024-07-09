@@ -80,9 +80,8 @@ class HomeScreen extends StatelessWidget {
                 future: keycloakWrapper.getUserInfo(),
                 builder: (context, snapshot) {
                   final name = snapshot.data?['name'] as String;
-                  final email = snapshot.data?['email'] as String;
 
-                  return Text('$name\n$email\n\n');
+                  return Text(name);
                 },
               ),
               TextButton(onPressed: logout, child: const Text('Logout')),

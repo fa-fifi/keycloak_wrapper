@@ -16,11 +16,15 @@ class KeycloakConfig {
   /// The realm name.
   final String realm;
 
+  /// The additional scope values that are used to request Claims.
+  final List<String>? additionalScopes;
+
   KeycloakConfig({
     required this.bundleIdentifier,
     required this.clientId,
     required this.frontendUrl,
     required this.realm,
+    this.additionalScopes,
   }) : assert(
           RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$')
               .hasMatch(bundleIdentifier),
@@ -35,6 +39,14 @@ class KeycloakConfig {
 
   /// The callback URI after the user has been successfully authorized and granted an access token.
   String get redirectUri => '$bundleIdentifier://login-callback';
+
+  /// The identifier for resources that the client wants to access.
+  List<String> get scopes => List.from(<String>{
+        'openid',
+        'profile',
+        'offline_access',
+        ...?additionalScopes,
+      });
 
   /// The user information endpoint to retrieve user profile data using a valid access token.
   String get userInfoEndpoint => '$issuer/protocol/openid-connect/userinfo';
