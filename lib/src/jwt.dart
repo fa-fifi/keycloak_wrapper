@@ -1,6 +1,6 @@
 part of '../keycloak_wrapper.dart';
 
-/// An open, industry standard method for representing claims securely between two parties.
+/// The industry standard method for representing claims securely between two parties.
 class JWT {
   /// The encoded JSON Web Token string.
   final String token;
@@ -22,10 +22,7 @@ class JWT {
   /// Whether the token has expired or not.
   ///
   /// Throws [FormatException] if the payload is invalid.
-  bool get isExpired {
-    if (expirationDate == null) return false;
-    return DateTime.now().isAfter(expirationDate!);
-  }
+  bool get isExpired => willExpired(Duration.zero);
 
   /// Returns the token issuing date.
   ///
@@ -59,5 +56,13 @@ class JWT {
   Duration? get remainingTime {
     if (expirationDate == null) return null;
     return expirationDate?.difference(DateTime.now());
+  }
+
+  /// Whether the token will expired within the given duration.
+  ///
+  /// Throws [FormatException] if the payload is invalid.
+  bool willExpired(Duration duration) {
+    if (expirationDate == null) return false;
+    return DateTime.now().isAfter(expirationDate!.add(duration));
   }
 }

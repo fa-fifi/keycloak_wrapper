@@ -143,15 +143,17 @@ class KeycloakWrapper {
     }
   }
 
-  /// Requests a new access token before it expires.
-  Future<void> updateToken() async {
+  /// Requests a new access token if it expires within the given duration.
+  Future<void> updateToken([Duration? duration]) async {
     final securedRefreshToken =
         await _secureStorage.read(key: _refreshTokenKey);
 
     if (securedRefreshToken == null) {
       developer.log('No refresh token found.', name: 'keycloak_wrapper');
       _streamController.add(false);
-    } else if (JWT.decode(securedRefreshToken).isExpired) {
+    } else if (JWT
+        .decode(securedRefreshToken)
+        .willExpired(duration ?? Duration.zero)) {
       developer.log('Expired refresh token', name: 'keycloak_wrapper');
       _streamController.add(false);
     } else {
