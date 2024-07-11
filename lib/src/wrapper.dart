@@ -97,6 +97,7 @@ class KeycloakWrapper {
           scopes: _keycloakConfig.scopes,
           promptValues: ['login'],
           allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+          clientSecret: _keycloakConfig.clientSecret,
         ),
       );
 
@@ -165,6 +166,7 @@ class KeycloakWrapper {
             scopes: _keycloakConfig.scopes,
             refreshToken: securedRefreshToken,
             allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+            clientSecret: _keycloakConfig.clientSecret,
           ),
         );
 

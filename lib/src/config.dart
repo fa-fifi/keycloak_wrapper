@@ -19,12 +19,16 @@ class KeycloakConfig {
   /// The additional scope values that are used to request Claims.
   final List<String>? additionalScopes;
 
+  /// The client's password to prove its identity to the Keycloak server.
+  final String? clientSecret;
+
   KeycloakConfig({
     required this.bundleIdentifier,
     required this.clientId,
     required this.frontendUrl,
     required this.realm,
     this.additionalScopes,
+    this.clientSecret,
   }) : assert(
           RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$')
               .hasMatch(bundleIdentifier),
