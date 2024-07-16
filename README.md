@@ -12,12 +12,12 @@ Integrate **Keycloak Single Sign-On (SSO)** authentication into your Flutter app
 
 ## Getting Started
 
-For end-user authentication and authorization, this package integrates with the [**AppAuth**](https://appauth.io) SDK to establish connections with OAuth 2.0 and OpenID Connect. This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers. Meanwhile, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
+For end-user authentication and authorization, this package integrates with the [**AppAuth**](https://appauth.io) SDK to establish connections using [**OAuth 2.0**](https://datatracker.ietf.org/doc/html/rfc6749) and [**OpenID Connect (OIDC)**](https://openid.net/specs/openid-connect-core-1_0.html). This integration allows users to securely log in and access protected resources, such as APIs or user data from third-party providers. Meanwhile, for token security, the [**flutter_secure_storage**](https://pub.dev/packages/flutter_secure_storage) package will be implemented to securely store all the tokens within the Keychain for iOS and Keystore for Android.
 
 > [!NOTE]
 > - [**AndroidX**](https://developer.android.com/jetpack/androidx) is required for this package. Starting from Flutter v1.12.13, newly created projects already enable AndroidX by default. In case your project was created prior to this Flutter version, please migrate it before using this package. You can follow this migration [guide](https://docs.flutter.dev/release/breaking-changes/androidx-migration) provided by the Flutter team.
 >
-> - Starting with Android API 28 and iOS 9, insecure HTTP connections are disabled by default on iOS and Android. To allow cleartext connections for your builds, you can check out this [guide](https://docs.flutter.dev/release/breaking-changes/network-policy-ios-android) provided by the Flutter team. However, it is not recommended to do this for your release build. Please use secure connections inside your release build whenever possible.
+> - Starting with Android API 28 and iOS 9, insecure HTTP connections are disabled by default. Check out this [guide](https://docs.flutter.dev/release/breaking-changes/network-policy-ios-android) if you want to allow cleartext connections for your build. However, it is not recommended to do this for your release build. Please use secure connections whenever possible.
 
 ### **Keycloak**
 To secure your application, you have to register it with your Keycloak instance. Head over to your **Keycloak Admin Console** and select your Client ID. Under the access setting, insert `<bundle_identifier>:/*` as a valid redirect URI, and do the same for the valid post logout redirect URI. Make sure your `<bundle_identifier>` does not contain any characters that are not allowed inside a hostname, such as spaces, underscores, etc.
@@ -63,10 +63,17 @@ Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so th
 ```
 
 ## Usage
-Use it directly or create an instance of the package somewhere inside your code, like below.
+Create an instance of `KeycloakWrapper` class somewhere inside your code, like below. Make sure to replace all the placeholders with your own configuration values.
 
 ```dart
-final keycloakWrapper = KeycloakWrapper();
+final keycloakConfig = KeycloakConfig(
+  bundleIdentifier: '<bundle_identifier>',
+  clientId: '<client_id>',
+  frontendUrl: '<frontend_url>',
+  realm: '<realm>',
+);
+
+final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
 ```
 
 Initialize the package within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
@@ -97,18 +104,12 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-Afterwards, create a button somewhere inside your login screen and use the following method to initiate the login process. Make sure to replace all the placeholders with your own configuration values.
+Afterwards, create a button somewhere inside your login screen and use the following method to initiate the login process.
 
 ```dart
 Future<void> login() async {
-    final config = KeycloakConfig(
-        bundleIdentifier: '<bundle_identifier>',
-        clientId: '<client_id>',
-        frontendUrl: '<frontend_url>',
-        realm: '<realm>');
-
-    await keycloakWrapper.login(config);
-  }
+  final isLoggedIn = await keycloakWrapper.login();
+}
 ```
 
 Once logged in, you're able to retrieve the user's information like below.
@@ -124,15 +125,15 @@ For logout, just this simple method will do. Make sure to pop off all stacked sc
 
 ```dart
 Future<void> logout() async {
-    await keycloakWrapper.logout();
-  }
+  final isLoggedOut = await keycloakWrapper.logout();
+}
 ```
 
 By default, all errors and exceptions are handled by the `onError` method of the `KeycloakWrapper` class, which prints the error directly inside the console. You can customize this behavior if you want to display a custom message to users when specific errors, such as authorization failures, occur. Below is an example of how you can override the method and handle errors and exceptions in your own way.
 
 ```dart
-keycloakWrapper.onError = (e, s) {
-    debugPrint('Error: $e');
+keycloakWrapper.onError = (message, error, stackTrace) {
+    // Enter your logic here.
 };
 ```
 
