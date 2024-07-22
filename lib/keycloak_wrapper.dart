@@ -1,4 +1,4 @@
-/// The primary library of this package containing all the authentication methods.
+/// A wrapper library for interacting with the Keycloak server.
 library;
 
 import 'dart:async';

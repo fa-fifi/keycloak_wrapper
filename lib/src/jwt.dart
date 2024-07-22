@@ -1,5 +1,7 @@
 part of '../keycloak_wrapper.dart';
 
+/// A JSON Web Token class.
+///
 /// The industry standard method for representing claims securely between two parties.
 class JWT {
   /// The encoded JSON Web Token string.

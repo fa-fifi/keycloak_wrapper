@@ -1,8 +1,8 @@
 part of '../keycloak_wrapper.dart';
 
-/// Manages user authentication and token exchange using Keycloak.
+/// A wrapper around the Keycloak authentication service.
 ///
-/// It uses [KeycloakConfig] for configuration settings and relies on `flutter_appauth` package for OAuth2 authorization.
+/// Provides functionalities for user authentication, token management, and resource authorization.
 class KeycloakWrapper {
   static KeycloakWrapper? _instance;
 

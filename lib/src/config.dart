@@ -1,8 +1,8 @@
 part of '../keycloak_wrapper.dart';
 
-/// The configuration class for Keycloak authentication.
+/// Your Keycloak client configuration class.
 ///
-/// Holds the essential information needed to interact with the Keycloak server.
+/// Holds essential details required for integrating with a Keycloak server.
 class KeycloakConfig {
   /// The application unique identifier.
   final String bundleIdentifier;
