@@ -15,16 +15,6 @@ Future<bool> hasNetwork() async {
   }
 }
 
-/// Parses the JSON Web Token and returns its payload.
-@Deprecated('Use `JWT.decode(token).payload` instead. '
-    'This feature will be removed in the next minor update.')
-Map<String, dynamic>? jwtDecode(String? token) {
-  final codeUnits =
-      base64Url.decode(base64Url.normalize('$token'.split('.')[1]));
-
-  return jsonDecode(utf8.decode(codeUnits)) as Map<String, dynamic>?;
-}
-
 /// Extension of the [TokenResponse] class from flutter_appauth package.
 extension TokenResponseHelper on TokenResponse? {
   /// Checks the validity of the token response.
