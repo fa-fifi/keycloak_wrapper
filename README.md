@@ -20,7 +20,7 @@ For end-user authentication and authorization, this package integrates with the 
 > - Starting with Android API 28 and iOS 9, insecure HTTP connections are disabled by default. Check out this [guide](https://docs.flutter.dev/release/breaking-changes/network-policy-ios-android) if you want to allow cleartext connections for your build. However, it is not recommended to do this for your release build. Please use secure connections whenever possible.
 
 ### **Keycloak**
-To secure your application, you have to register it with your Keycloak instance. Head over to your **Keycloak Admin Console** and select your Client ID. Under the access setting, insert `<bundle_identifier>:/*` as a valid redirect URI, and do the same for the valid post logout redirect URI. Make sure your `<bundle_identifier>` does not contain any characters that are not allowed inside a hostname, such as spaces, underscores, etc.
+Head over to your **Keycloak Administration Console** and select your Client ID. Inside the access setting section, insert `<bundle_identifier>:/*` as a **valid redirect URI**, and do the same for the **valid post logout redirect URI**. Make sure your bundle identifier value does not contain any characters that are not allowed inside a hostname, such as spaces, underscores, etc.
 
 ### **Android**
 Go to the `build.gradle` file for your Android app to specify the custom scheme so that there should be a section in it that look similar to the following but replace `<package_name>` with the desired value.
@@ -133,7 +133,7 @@ By default, all errors and exceptions are handled by the `onError` method of the
 
 ```dart
 keycloakWrapper.onError = (message, error, stackTrace) {
-    // Enter your logic here.
+    // Insert your logic here.
 };
 ```
 
