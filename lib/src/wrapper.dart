@@ -74,11 +74,12 @@ class KeycloakWrapper {
   }
 
   /// Initializes the user authentication state and refreshes the token.
-  Future<void> initialize() async {
+  void initialize() {
     try {
-      await updateToken();
       _isInitialized = true;
+      updateToken();
     } catch (e, s) {
+      _isInitialized = false;
       onError('Failed to initialize plugin.', e, s);
     }
   }

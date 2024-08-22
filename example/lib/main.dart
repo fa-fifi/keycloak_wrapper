@@ -10,10 +10,10 @@ final keycloakConfig = KeycloakConfig(
 final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize the plugin at the start of your app.
-  await keycloakWrapper.initialize();
+  keycloakWrapper.initialize();
   // Listen to the errors caught by the plugin.
   keycloakWrapper.onError = (message, _, __) {
     // Display the error message inside a snackbar.
