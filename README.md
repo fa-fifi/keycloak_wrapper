@@ -79,9 +79,9 @@ final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
 Initialize the package within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
 
 ```dart
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await keycloakWrapper.initialize();
+  keycloakWrapper.initialize();
   ...
   runApp(const MyApp());
 }
