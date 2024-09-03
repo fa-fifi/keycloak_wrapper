@@ -27,7 +27,7 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>com.keycloak_wrapper.example</string>
+					<string>com.example.demo</string>
 				</array>
 			</dict>
 		</array>

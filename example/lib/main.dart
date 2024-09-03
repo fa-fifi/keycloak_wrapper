@@ -34,8 +34,26 @@ class MyApp extends StatelessWidget {
         home: StreamBuilder<bool>(
           initialData: false,
           stream: keycloakWrapper.authenticationStream,
-          builder: (context, snapshot) =>
-              snapshot.data! ? const HomeScreen() : const LoginScreen(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LoadingScreen();
+            } else if (snapshot.hasData) {
+              return const HomeScreen();
+            } else {
+              return const LoginScreen();
+            }
+          },
+        ),
+      );
+}
+
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator.adaptive(),
         ),
       );
 }

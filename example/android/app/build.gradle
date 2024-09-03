@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.keycloak_wrapper.example"
+    namespace = "com.example.demo"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -34,13 +34,13 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.keycloak_wrapper.example"
+        applicationId = "com.example.demo"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
         manifestPlaceholders += [
-                "appAuthRedirectScheme": "com.keycloak_wrapper.example"
+                "appAuthRedirectScheme": "com.example.demo"
         ]
     }
 
