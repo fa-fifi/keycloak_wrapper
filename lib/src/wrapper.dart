@@ -74,10 +74,18 @@ class KeycloakWrapper {
   }
 
   /// Initializes the user authentication state and refreshes the token.
-  void initialize() {
+  Future<void> initialize() async {
+    final prefs = SharedPreferencesAsync();
+    final hasRunBefore = await prefs.getBool('hasRunBefore') ?? false;
+
+    if (!hasRunBefore) {
+      _secureStorage.deleteAll();
+      prefs.setBool('hasRunBefore', true);
+    }
+
     try {
       _isInitialized = true;
-      updateToken();
+      await updateToken();
     } catch (e, s) {
       _isInitialized = false;
       onError('Failed to initialize plugin.', e, s);
