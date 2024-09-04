@@ -16,6 +16,7 @@ dependencies:
     sdk: flutter
   flutter_appauth: ^6.0.6
   flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:
