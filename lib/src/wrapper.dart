@@ -33,7 +33,7 @@ class KeycloakWrapper {
 
   /// Returns the access token string.
   ///
-  /// To get the payload, do `JWT.decode(KeycloakWrapper().accessToken).payload`.
+  /// To get the payload, do `JWT.decode(keycloakWrapper.accessToken).payload`.
   String? get accessToken => tokenResponse?.accessToken;
 
   /// The stream of the user authentication state.
@@ -43,7 +43,7 @@ class KeycloakWrapper {
 
   /// Returns the id token string.
   ///
-  /// To get the payload, do `JWT.decode(KeycloakWrapper().idToken).payload`.
+  /// To get the payload, do `JWT.decode(keycloakWrapper.idToken).payload`.
   String? get idToken => tokenResponse?.idToken;
 
   /// Whether this package has been initialized.
@@ -51,7 +51,7 @@ class KeycloakWrapper {
 
   /// Returns the refresh token string.
   ///
-  /// To get the payload, do `JWT.decode(KeycloakWrapper().refreshToken).payload`.
+  /// To get the payload, do `JWT.decode(keycloakWrapper.refreshToken).payload`.
   String? get refreshToken => tokenResponse?.refreshToken;
 
   /// Retrieves the current user information.
