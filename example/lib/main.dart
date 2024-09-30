@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keycloak_wrapper/keycloak_wrapper.dart';
 
 final keycloakConfig = KeycloakConfig(
-  bundleIdentifier: '<bundle_identifier>',
+  bundleIdentifier: 'com.example.demo',
   clientId: '<client_id>',
   frontendUrl: '<frontend_url>',
   realm: '<realm>',
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const LoadingScreen();
-            } else if (snapshot.hasData) {
+            } else if (snapshot.data!) {
               return const HomeScreen();
             } else {
               return const LoginScreen();
