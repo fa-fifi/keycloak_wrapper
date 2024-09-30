@@ -5,6 +5,8 @@ repository: https://github.com/fa-fifi/keycloak_wrapper
 screenshots:
   - description: "Default Keycloak Login Screen"
     path: screenshots/login-screen.png
+funding:
+  - https://github.com/sponsors/fa-fifi
 topics: [ authentication, keycloak, oauth2, openidconnect ]
 
 environment:
