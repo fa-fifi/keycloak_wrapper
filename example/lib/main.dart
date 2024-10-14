@@ -92,14 +92,15 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         body: Center(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               FutureBuilder(
                 // Retrieve the user information.
                 future: keycloakWrapper.getUserInfo(),
                 builder: (context, snapshot) {
-                  final name = snapshot.data?['name'] as String;
+                  final name = snapshot.data?['name'];
 
-                  return Text(name);
+                  return Text('$name ${snapshot.data}');
                 },
               ),
               TextButton(onPressed: logout, child: const Text('Logout')),

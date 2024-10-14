@@ -16,7 +16,7 @@ class KeycloakConfig {
   /// The realm name.
   final String realm;
 
-  /// The additional scope values that are used to request Claims.
+  /// The optional scope values that are used to request claims.
   final List<String>? additionalScopes;
 
   /// The client's password to prove its identity to the Keycloak server.
@@ -47,8 +47,6 @@ class KeycloakConfig {
   /// The identifier for resources that the client wants to access.
   List<String> get scopes => List.from(<String>{
         'openid',
-        'profile',
-        'offline_access',
         ...?additionalScopes,
       });
 
