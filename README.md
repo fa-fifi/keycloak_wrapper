@@ -45,6 +45,9 @@ Attribute application@name at AndroidManifest.xml:5:9-42 requires a placeholder 
 
 If you see this error then update your `build.gradle` to use `+=` instead.
 
+> [!WARNING]
+> - Starting from Flutter v3.22.0, newly created projects will disallow [task affinity](https://github.com/flutter/flutter/pull/144018) by default to prevent the [StrandHogg attack](https://developer.android.com/privacy-and-security/risks/strandhogg). However, these changes have broken the package, as users will no longer be able to redirect back to the app after login. Currently, the only way to fix this issue is to remove `android:taskAffinity=""` from your `AndroidManifest.xml` file.
+
 ### **iOS/macOS**
 Go to the `Info.plist` for your iOS/macOS app to specify the custom scheme so that there should be a section in it that look similar to the following but replace `<bundle_identifier>` with the desired value.
 
@@ -147,7 +150,7 @@ Contributions are welcome! However, please make sure to follow the guidelines be
 <br> Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak_wrapper/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
 - **Need some help?**
-<br> As of now, there isn't any discussion yet regarding any issue with the package, but feel free to open up a new one on Github under [Discussions](https://github.com/fa-fifi/keycloak_wrapper/discussions). I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
+<br> Feel free to open up a new [discussions](https://github.com/fa-fifi/keycloak_wrapper/discussions) on Github if you need any help from the community. I'll try my best to help you as soon as possible. If you want to make any feature requests, you can reach out using the same platform for us to discuss your idea further.
 
 - **Want to contribute?**
 <br> Since I am the only maintainer of this package, frequent bug fixes or updates might not be feasible. Therefore, any [pull requests](https://github.com/fa-fifi/keycloak_wrapper/pulls) are greatly appreciated! Please ensure that the PR description clearly outlines both the problem and its proposed solution. If applicable, include the relevant issue number in the description.
