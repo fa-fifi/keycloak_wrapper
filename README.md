@@ -115,13 +115,19 @@ Future<void> login() async {
 }
 ```
 
-Once logged in, you're able to retrieve the user's information like below.
+Once logged in, you'll be able to retrieve the user's information and tokens as shown below.
 
 ```dart
+// Retrieve user's information.
 final user = await keycloakWrapper.getUserInfo();
 
 final name = user?['name'];
 final email = user?['email'];
+
+// Retrieve tokens.
+final accessToken = keycloakWrapper.accessToken;
+final idToken = keycloakWrapper.idToken;
+final refreshToken = keycloakWrapper.refreshToken;
 ```
 
 For logout, just this simple method will do. Make sure to pop off all stacked screens, if there are any.

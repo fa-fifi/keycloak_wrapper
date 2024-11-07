@@ -62,17 +62,17 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   // Login using the given configuration.
-  Future<bool> login() async {
+  Future<void> login() async {
     // Check if user has successfully logged in.
     final isLoggedIn = await keycloakWrapper.login();
 
-    return isLoggedIn;
+    if (isLoggedIn) debugPrint('User has successfully logged in.');
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Center(
-          child: TextButton(onPressed: login, child: const Text('Login')),
+          child: FilledButton(onPressed: login, child: const Text('Login')),
         ),
       );
 }
@@ -81,11 +81,11 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   // Logout from the current realm.
-  Future<bool> logout() async {
+  Future<void> logout() async {
     // Check if user has successfully logged out.
     final isLoggedOut = await keycloakWrapper.logout();
 
-    return isLoggedOut;
+    if (isLoggedOut) debugPrint('User has successfully logged out.');
   }
 
   @override
@@ -98,12 +98,17 @@ class HomeScreen extends StatelessWidget {
                 // Retrieve the user information.
                 future: keycloakWrapper.getUserInfo(),
                 builder: (context, snapshot) {
-                  final name = snapshot.data?['name'];
+                  final userInfo = snapshot.data ?? {};
 
-                  return Text('$name ${snapshot.data}');
+                  // Display the retrieved user information.
+                  return Column(children: [
+                    ...userInfo.entries
+                        .map((entry) => Text('${entry.key}: ${entry.value}')),
+                    if (userInfo.isNotEmpty) const SizedBox(height: 20),
+                  ]);
                 },
               ),
-              TextButton(onPressed: logout, child: const Text('Logout')),
+              FilledButton(onPressed: logout, child: const Text('Logout')),
             ],
           ),
         ),
