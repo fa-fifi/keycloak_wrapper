@@ -75,12 +75,13 @@ class KeycloakWrapper {
 
   /// Initializes the user authentication state and refreshes the token.
   Future<void> initialize() async {
+    const key = 'keycloak:hasRunBefore';
     final prefs = SharedPreferencesAsync();
-    final hasRunBefore = await prefs.getBool('hasRunBefore') ?? false;
+    final hasRunBefore = await prefs.getBool(key) ?? false;
 
     if (!hasRunBefore) {
       _secureStorage.deleteAll();
-      prefs.setBool('hasRunBefore', true);
+      prefs.setBool(key, true);
     }
 
     try {
