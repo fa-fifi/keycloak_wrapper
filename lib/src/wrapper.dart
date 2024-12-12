@@ -145,6 +145,7 @@ class KeycloakWrapper {
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
+      tokenResponse = null;
       _streamController.add(false);
       return true;
     } catch (e, s) {
