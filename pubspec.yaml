@@ -8,8 +8,8 @@ screenshots:
 topics: [ authentication, keycloak, oauth2, openidconnect ]
 
 environment:
-  sdk: ">=3.1.2 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
