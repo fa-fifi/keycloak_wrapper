@@ -29,33 +29,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        // Listen to the user authentication stream.
-        home: StreamBuilder<bool>(
-          initialData: false,
-          stream: keycloakWrapper.authenticationStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingScreen();
-            } else if (snapshot.data!) {
-              return const HomeScreen();
-            } else {
-              return const LoginScreen();
-            }
-          },
-        ),
-      );
+    scaffoldMessengerKey: scaffoldMessengerKey,
+    // Listen to the user authentication stream.
+    home: StreamBuilder<bool>(
+      initialData: false,
+      stream: keycloakWrapper.authenticationStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const LoadingScreen();
+        } else if (snapshot.data!) {
+          return const HomeScreen();
+        } else {
+          return const LoginScreen();
+        }
+      },
+    ),
+  );
 }
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
-      );
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: CircularProgressIndicator.adaptive()));
 }
 
 class LoginScreen extends StatelessWidget {
@@ -71,10 +68,10 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Center(
-          child: FilledButton(onPressed: login, child: const Text('Login')),
-        ),
-      );
+    body: Center(
+      child: FilledButton(onPressed: login, child: const Text('Login')),
+    ),
+  );
 }
 
 class HomeScreen extends StatelessWidget {
@@ -90,27 +87,30 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FutureBuilder(
-                // Retrieve the user information.
-                future: keycloakWrapper.getUserInfo(),
-                builder: (context, snapshot) {
-                  final userInfo = snapshot.data ?? {};
+    body: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FutureBuilder(
+            // Retrieve the user information.
+            future: keycloakWrapper.getUserInfo(),
+            builder: (context, snapshot) {
+              final userInfo = snapshot.data ?? {};
 
-                  // Display the retrieved user information.
-                  return Column(children: [
-                    ...userInfo.entries
-                        .map((entry) => Text('${entry.key}: ${entry.value}')),
-                    if (userInfo.isNotEmpty) const SizedBox(height: 20),
-                  ]);
-                },
-              ),
-              FilledButton(onPressed: logout, child: const Text('Logout')),
-            ],
+              // Display the retrieved user information.
+              return Column(
+                children: [
+                  ...userInfo.entries.map(
+                    (entry) => Text('${entry.key}: ${entry.value}'),
+                  ),
+                  if (userInfo.isNotEmpty) const SizedBox(height: 20),
+                ],
+              );
+            },
           ),
-        ),
-      );
+          FilledButton(onPressed: logout, child: const Text('Logout')),
+        ],
+      ),
+    ),
+  );
 }
