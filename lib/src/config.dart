@@ -22,6 +22,8 @@ class KeycloakConfig {
   /// The client's password to prove its identity to the Keycloak server.
   final String? clientSecret;
 
+  final bool _allowInsecureConnections;
+
   KeycloakConfig({
     required this.bundleIdentifier,
     required this.clientId,
@@ -29,14 +31,17 @@ class KeycloakConfig {
     required this.realm,
     this.additionalScopes,
     this.clientSecret,
-  }) : assert(
+    bool? allowInsecureConnections,
+  })  : _allowInsecureConnections =
+            allowInsecureConnections ?? !frontendUrl.startsWith('https://'),
+        assert(
           RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*$')
               .hasMatch(bundleIdentifier),
           'Invalid bundle identifier: must be a valid hostname (no spaces, underscores, etc.).',
         );
 
   /// Whether non-HTTPS endpoints are allowed or not.
-  bool get allowInsecureConnections => !frontendUrl.startsWith('https://');
+  bool get allowInsecureConnections => _allowInsecureConnections;
 
   /// The base URI for the authorization server.
   String get issuer => '$frontendUrl/realms/$realm';
