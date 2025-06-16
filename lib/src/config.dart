@@ -30,9 +30,9 @@ class KeycloakConfig {
     this.additionalScopes,
     this.clientSecret,
   }) : assert(
-          RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$')
+          RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*$')
               .hasMatch(bundleIdentifier),
-          'Invalid bundle identifier. Must not contain characters that are not allowed inside a hostname, such as spaces, underscores, etc.',
+          'Invalid bundle identifier: must be a valid hostname (no spaces, underscores, etc.).',
         );
 
   /// Whether non-HTTPS endpoints are allowed or not.
