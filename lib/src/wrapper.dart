@@ -31,6 +31,8 @@ class KeycloakWrapper {
 
   KeycloakWrapper._(this._keycloakConfig);
 
+  Timer? _refreshTimer;
+
   /// Returns the access token string.
   ///
   /// To get the payload, do `JWT.decode(keycloakWrapper.accessToken).payload`.
@@ -53,6 +55,41 @@ class KeycloakWrapper {
   ///
   /// To get the payload, do `JWT.decode(keycloakWrapper.refreshToken).payload`.
   String? get refreshToken => tokenResponse?.refreshToken;
+
+  /// Call this after login or token refresh to schedule the next refresh.
+  void _scheduleTokenRefresh() {
+    _refreshTimer?.cancel();
+
+    final accessToken = this.accessToken;
+    if (accessToken == null) return;
+
+    final jwt = JWT.decode(accessToken);
+    final remaining = jwt.remainingTime;
+    if (remaining == null || remaining.inSeconds <= 0) return;
+
+    // Refresh 1 minute before expiry, but not less than 5 seconds from now
+    final refreshIn = remaining - const Duration(minutes: 1);
+    final duration = refreshIn > const Duration(seconds: 5)
+        ? refreshIn
+        : const Duration(seconds: 5);
+
+    _refreshTimer = Timer(duration, () async {
+      await updateToken();
+      _scheduleTokenRefresh(); // Reschedule after refresh
+    });
+  }
+
+  /// Call this in login and updateToken after a successful token response.
+  void _onTokenUpdated() {
+    _scheduleTokenRefresh();
+    // ...any other logic you want after token update...
+  }
+
+  /// Call this on logout or dispose to cancel the timer.
+  void _cancelTokenRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
+  }
 
   /// Retrieves the current user information.
   Future<Map<String, dynamic>?> getUserInfo() async {
@@ -118,6 +155,7 @@ class KeycloakWrapper {
             value: refreshToken,
           );
         }
+        _onTokenUpdated(); // <-- Schedule refresh
       } else {
         developer.log('Invalid token response.', name: 'keycloak_wrapper');
       }
@@ -146,6 +184,7 @@ class KeycloakWrapper {
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
       tokenResponse = null;
+      _cancelTokenRefresh(); // <-- Cancel scheduled refresh
       _streamController.add(false);
       return true;
     } catch (e, s) {
@@ -190,6 +229,7 @@ class KeycloakWrapper {
               value: refreshToken,
             );
           }
+          _onTokenUpdated(); // <-- Schedule refresh
         } else {
           developer.log('Invalid token response.', name: 'keycloak_wrapper');
         }
