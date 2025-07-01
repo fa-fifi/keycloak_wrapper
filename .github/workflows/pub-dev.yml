@@ -2,40 +2,18 @@ name: Publish Package
 
 on:
   push:
-    branches: main
-    paths: CHANGELOG.md
-    
+    tags:
+    - 'v[0-9]+.[0-9]+.[0-9]+'
+
 jobs:
   publish:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
-    environment: pub.dev
-    outputs:
-      success: ${{ steps.package.outputs.success }}
-      version: ${{ steps.package.outputs.localVersion }}
     steps:
       - uses: actions/checkout@v4
-      - name: Publish package
-        id: package
-        uses: k-paxian/dart-package-publisher@master
-        with:
-          accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
-          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
-          flutter: true
-          force: true
-          format: true
-          skipTests: true
-
-  release:
-    runs-on: ubuntu-latest
-    permissions: write-all
-    needs: publish
-    if: needs.publish.outputs.success == 'true' && !contains(needs.publish.outputs.version, '-')
-    steps:
-      - uses: actions/checkout@v4
-      - name: Extract release notes
-        id: release-notes
-        uses: ffurrer2/extract-release-notes@v2
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create v${{ needs.publish.outputs.version }} --notes '${{ steps.release-notes.outputs.release_notes }}'
+      - uses: dart-lang/setup-dart@v1
+      - name: Install dependencies
+        run: dart pub get
+      - name: Publish
+        run: dart pub publish --force
