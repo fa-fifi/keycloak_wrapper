@@ -8,6 +8,8 @@ class KeycloakWrapper {
 
   bool _isInitialized = false;
 
+  Timer? _refreshTimer;
+
   final KeycloakConfig _keycloakConfig;
 
   late final _streamController = StreamController<bool>.broadcast();
@@ -86,7 +88,7 @@ class KeycloakWrapper {
 
     try {
       _isInitialized = true;
-      await updateToken();
+      await exchangeTokens();
     } catch (e, s) {
       _isInitialized = false;
       onError('Failed to initialize plugin.', e, s);
@@ -118,6 +120,7 @@ class KeycloakWrapper {
             value: refreshToken,
           );
         }
+        _onTokenUpdated();
       } else {
         developer.log('Invalid token response.', name: 'keycloak_wrapper');
       }
@@ -146,6 +149,8 @@ class KeycloakWrapper {
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
       tokenResponse = null;
+      _refreshTimer?.cancel();
+      _refreshTimer = null;
       _streamController.add(false);
       return true;
     } catch (e, s) {
@@ -155,7 +160,12 @@ class KeycloakWrapper {
   }
 
   /// Requests a new access token if it expires within the given duration.
-  Future<void> updateToken([Duration? duration]) async {
+  @Deprecated(
+      'Will be removed in the next minor update. Please use exhangeTokens method instead.')
+  Future<void> updateToken([Duration? duration]) => exchangeTokens(duration);
+
+  /// Requests a new access token if it expires within the given duration.
+  Future<void> exchangeTokens([Duration? duration]) async {
     final securedRefreshToken =
         await _secureStorage.read(key: _refreshTokenKey);
 
@@ -190,6 +200,7 @@ class KeycloakWrapper {
               value: refreshToken,
             );
           }
+          _onTokenUpdated();
         } else {
           developer.log('Invalid token response.', name: 'keycloak_wrapper');
         }
@@ -207,5 +218,43 @@ class KeycloakWrapper {
       _isInitialized,
       'Make sure the package has been initialized prior to calling this method.',
     );
+  }
+
+  void _onTokenUpdated() {
+    _scheduleTokenRefresh();
+  }
+
+  void _scheduleTokenRefresh() {
+    _refreshTimer?.cancel();
+
+    if (!tokenResponse.isValid) return;
+
+    Duration? duration;
+
+    if (accessToken != null) {
+      final jwt = JWT.decode(accessToken!);
+      final remainingTime = jwt.remainingTime;
+      if (remainingTime != null && remainingTime.inSeconds > 0) {
+        final refreshIn = remainingTime - const Duration(minutes: 1);
+        duration = refreshIn > const Duration(seconds: 5)
+            ? refreshIn
+            : const Duration(seconds: 5);
+      }
+    }
+
+    if ((duration == null || duration.inSeconds <= 0) && refreshToken != null) {
+      final jwt = JWT.decode(refreshToken!);
+      final remainingTime = jwt.remainingTime;
+      if (remainingTime != null && remainingTime.inSeconds > 0) {
+        duration = const Duration(seconds: 5);
+      }
+    }
+
+    if (duration == null) return;
+
+    _refreshTimer = Timer(duration, () async {
+      await exchangeTokens();
+      _scheduleTokenRefresh();
+    });
   }
 }
