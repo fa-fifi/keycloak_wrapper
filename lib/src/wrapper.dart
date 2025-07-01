@@ -160,6 +160,11 @@ class KeycloakWrapper {
   }
 
   /// Requests a new access token if it expires within the given duration.
+  @Deprecated(
+      'Will be removed in the next minor update. Please use exhangeTokens method instead.')
+  Future<void> updateToken([Duration? duration]) => exchangeTokens(duration);
+
+  /// Requests a new access token if it expires within the given duration.
   Future<void> exchangeTokens([Duration? duration]) async {
     final securedRefreshToken =
         await _secureStorage.read(key: _refreshTokenKey);
