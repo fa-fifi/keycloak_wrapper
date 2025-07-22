@@ -207,11 +207,6 @@ class KeycloakWrapper {
     }
   }
 
-  /// Requests a new access token if it expires within the given duration.
-  @Deprecated(
-      'Will be removed in the next minor update. Please use exhangeTokens method instead.')
-  Future<void> updateToken([Duration? duration]) => exchangeTokens(duration);
-
   void _assertInitialization() {
     assert(
       _isInitialized,
