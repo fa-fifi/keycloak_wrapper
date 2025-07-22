@@ -56,114 +56,6 @@ class KeycloakWrapper {
   /// To get the payload, do `JWT.decode(keycloakWrapper.refreshToken).payload`.
   String? get refreshToken => tokenResponse?.refreshToken;
 
-  /// Retrieves the current user information.
-  Future<Map<String, dynamic>?> getUserInfo() async {
-    _assertInitialization();
-    try {
-      final url = Uri.parse(_keycloakConfig.userInfoEndpoint);
-      final client = HttpClient();
-      final request = await client.getUrl(url)
-        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
-
-      client.close();
-      return jsonDecode(responseBody) as Map<String, dynamic>?;
-    } catch (e, s) {
-      onError('Failed to fetch user info.', e, s);
-      return null;
-    }
-  }
-
-  /// Initializes the user authentication state and refreshes the token.
-  Future<void> initialize() async {
-    const key = 'keycloak:hasRunBefore';
-    final prefs = SharedPreferencesAsync();
-    final hasRunBefore = await prefs.getBool(key) ?? false;
-
-    if (!hasRunBefore) {
-      _secureStorage.deleteAll();
-      prefs.setBool(key, true);
-    }
-
-    try {
-      _isInitialized = true;
-      await exchangeTokens();
-    } catch (e, s) {
-      _isInitialized = false;
-      onError('Failed to initialize plugin.', e, s);
-    }
-  }
-
-  /// Logs the user in.
-  ///
-  /// Returns true if login is successful.
-  Future<bool> login() async {
-    _assertInitialization();
-    try {
-      tokenResponse = await _appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          _keycloakConfig.clientId,
-          _keycloakConfig.redirectUri,
-          issuer: _keycloakConfig.issuer,
-          scopes: _keycloakConfig.scopes,
-          promptValues: ['login'],
-          allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
-          clientSecret: _keycloakConfig.clientSecret,
-        ),
-      );
-
-      if (tokenResponse.isValid) {
-        if (refreshToken != null) {
-          await _secureStorage.write(
-            key: _refreshTokenKey,
-            value: refreshToken,
-          );
-        }
-        _onTokenUpdated();
-      } else {
-        developer.log('Invalid token response.', name: 'keycloak_wrapper');
-      }
-
-      _streamController.add(tokenResponse.isValid);
-      return tokenResponse.isValid;
-    } catch (e, s) {
-      onError('Failed to login.', e, s);
-      return false;
-    }
-  }
-
-  /// Logs the user out.
-  ///
-  /// Returns true if logout is successful.
-  Future<bool> logout() async {
-    _assertInitialization();
-    try {
-      final request = EndSessionRequest(
-        idTokenHint: idToken,
-        issuer: _keycloakConfig.issuer,
-        postLogoutRedirectUrl: _keycloakConfig.redirectUri,
-        allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
-      );
-
-      await _appAuth.endSession(request);
-      await _secureStorage.deleteAll();
-      tokenResponse = null;
-      _refreshTimer?.cancel();
-      _refreshTimer = null;
-      _streamController.add(false);
-      return true;
-    } catch (e, s) {
-      onError('Failed to logout.', e, s);
-      return false;
-    }
-  }
-
-  /// Requests a new access token if it expires within the given duration.
-  @Deprecated(
-      'Will be removed in the next minor update. Please use exhangeTokens method instead.')
-  Future<void> updateToken([Duration? duration]) => exchangeTokens(duration);
-
   /// Requests a new access token if it expires within the given duration.
   Future<void> exchangeTokens([Duration? duration]) async {
     final securedRefreshToken =
@@ -213,11 +105,129 @@ class KeycloakWrapper {
     }
   }
 
+  /// Retrieves the current user information.
+  Future<Map<String, dynamic>?> getUserInfo() async {
+    _assertInitialization();
+    try {
+      final url = Uri.parse(_keycloakConfig.userInfoEndpoint);
+      final client = HttpClient();
+      final request = await client.getUrl(url)
+        ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+
+      client.close();
+      return jsonDecode(responseBody) as Map<String, dynamic>?;
+    } catch (e, s) {
+      _handleError('Failed to fetch user info.', e, s);
+      return null;
+    }
+  }
+
+  /// Initializes the user authentication state and refreshes the token.
+  Future<void> initialize() async {
+    final prefs = SharedPreferencesAsync();
+    final hasRunBefore = await prefs.getBool(_hasRunBeforeKey) ?? false;
+
+    if (!hasRunBefore) {
+      _secureStorage.deleteAll();
+      prefs.setBool(_hasRunBeforeKey, true);
+    }
+
+    try {
+      _isInitialized = true;
+      await exchangeTokens();
+    } catch (e, s) {
+      _isInitialized = false;
+      _handleError('Failed to initialize plugin.', e, s);
+    }
+  }
+
+  /// Logs the user in.
+  ///
+  /// Returns true if login is successful.
+  Future<bool> login() async {
+    _assertInitialization();
+    try {
+      tokenResponse = await _appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          _keycloakConfig.clientId,
+          _keycloakConfig.redirectUri,
+          issuer: _keycloakConfig.issuer,
+          scopes: _keycloakConfig.scopes,
+          promptValues: ['login'],
+          allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+          clientSecret: _keycloakConfig.clientSecret,
+        ),
+      );
+
+      if (tokenResponse.isValid) {
+        if (refreshToken != null) {
+          await _secureStorage.write(
+            key: _refreshTokenKey,
+            value: refreshToken,
+          );
+        }
+        _onTokenUpdated();
+      } else {
+        developer.log('Invalid token response.', name: 'keycloak_wrapper');
+      }
+
+      _streamController.add(tokenResponse.isValid);
+      return tokenResponse.isValid;
+    } catch (e, s) {
+      _handleError('Failed to login.', e, s);
+      return false;
+    }
+  }
+
+  /// Logs the user out.
+  ///
+  /// Returns true if logout is successful.
+  Future<bool> logout() async {
+    _assertInitialization();
+    try {
+      final request = EndSessionRequest(
+        idTokenHint: idToken,
+        issuer: _keycloakConfig.issuer,
+        postLogoutRedirectUrl: _keycloakConfig.redirectUri,
+        allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+      );
+
+      await _appAuth.endSession(request);
+      await _secureStorage.deleteAll();
+      tokenResponse = null;
+      _refreshTimer?.cancel();
+      _refreshTimer = null;
+      _streamController.add(false);
+      return true;
+    } catch (e, s) {
+      _handleError('Failed to logout.', e, s);
+      return false;
+    }
+  }
+
+  /// Requests a new access token if it expires within the given duration.
+  @Deprecated(
+      'Will be removed in the next minor update. Please use exhangeTokens method instead.')
+  Future<void> updateToken([Duration? duration]) => exchangeTokens(duration);
+
   void _assertInitialization() {
     assert(
       _isInitialized,
       'Make sure the package has been initialized prior to calling this method.',
     );
+  }
+
+  void _handleError(String message, Object error, StackTrace stackTrace) {
+    onError.call(message, error, stackTrace);
+    if (error is PlatformException) {
+      if (error.code == 'token_failed') {
+        final prefs = SharedPreferencesAsync();
+        prefs.setBool(_hasRunBeforeKey, false);
+        initialize();
+      }
+    }
   }
 
   void _onTokenUpdated() {

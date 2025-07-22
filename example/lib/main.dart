@@ -1,9 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:keycloak_wrapper/keycloak_wrapper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final keycloakConfig = KeycloakConfig(
   bundleIdentifier: 'com.example.demo',
@@ -19,13 +15,7 @@ void main() {
   // Initialize the plugin at the start of your app.
   keycloakWrapper.initialize();
   // Listen to the errors caught by the plugin.
-  keycloakWrapper.onError = (message, e, s) {
-    if (e is PlatformException) log('Code: ${e.code} Message: ${e.message}');
-    log(message, error: e, stackTrace: s);
-    final prefs = SharedPreferencesAsync();
-    prefs.setBool("keycloak:hasRunBefore", false);
-    keycloakWrapper.initialize();
-    keycloakWrapper.logout();
+  keycloakWrapper.onError = (message, _, __) {
     // Display the error message inside a snackbar.
     scaffoldMessengerKey.currentState
       ?..hideCurrentSnackBar()
