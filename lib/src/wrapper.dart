@@ -8,9 +8,9 @@ class KeycloakWrapper {
 
   bool _isInitialized = false;
 
-  Timer? _refreshTimer;
+  late KeycloakConfig _keycloakConfig;
 
-  final KeycloakConfig _keycloakConfig;
+  Timer? _refreshTimer;
 
   late final _streamController = StreamController<bool>.broadcast();
 
@@ -28,10 +28,9 @@ class KeycloakWrapper {
   /// The details from making a successful token exchange.
   TokenResponse? tokenResponse;
 
-  factory KeycloakWrapper({required KeycloakConfig config}) =>
-      _instance ??= KeycloakWrapper._(config);
+  factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
 
-  KeycloakWrapper._(this._keycloakConfig);
+  KeycloakWrapper._();
 
   /// Returns the access token string.
   ///
@@ -125,7 +124,8 @@ class KeycloakWrapper {
   }
 
   /// Initializes the user authentication state and refreshes the token.
-  Future<void> initialize() async {
+  Future<void> initialize({required KeycloakConfig config}) async {
+    _keycloakConfig = config;
     final prefs = SharedPreferencesAsync();
     final hasRunBefore = await prefs.getBool(_hasRunBeforeKey) ?? false;
 
@@ -216,11 +216,12 @@ class KeycloakWrapper {
 
   void _handleError(String message, Object error, StackTrace stackTrace) {
     onError.call(message, error, stackTrace);
+
     if (error is PlatformException) {
       if (error.code == 'token_failed') {
         final prefs = SharedPreferencesAsync();
         prefs.setBool(_hasRunBeforeKey, false);
-        initialize();
+        initialize(config: _keycloakConfig);
       }
     }
   }

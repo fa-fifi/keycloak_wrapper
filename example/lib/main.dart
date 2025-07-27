@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:keycloak_wrapper/keycloak_wrapper.dart';
 
-final keycloakConfig = KeycloakConfig(
-  bundleIdentifier: 'com.example.demo',
-  clientId: 'veins-demo',
-  frontendUrl: 'https://sso.tmrnd.com.my',
-  realm: 'demo-app',
-);
-final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
+final keycloakWrapper = KeycloakWrapper();
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize the plugin at the start of your app.
-  keycloakWrapper.initialize();
+  keycloakWrapper.initialize(
+    config: KeycloakConfig(
+      bundleIdentifier: 'com.example.demo',
+      clientId: 'veins-demo',
+      frontendUrl: 'https://sso.tmrnd.com.my',
+      realm: 'demo-app',
+    ),
+  );
   // Listen to the errors caught by the plugin.
   keycloakWrapper.onError = (message, _, __) {
     // Display the error message inside a snackbar.
