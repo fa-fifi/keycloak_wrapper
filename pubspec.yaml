@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_appauth: ^9.0.1
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.0.0
   shared_preferences: ^2.5.3
 
 dev_dependencies:
