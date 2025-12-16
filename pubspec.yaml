@@ -1,6 +1,6 @@
 name: keycloak_wrapper
 description: Keycloak Single Sign-On (SSO) authentication package for Flutter framework.
-version: 1.4.6
+version: 1.4.7
 repository: https://github.com/fa-fifi/keycloak_wrapper
 screenshots:
   - description: "Default Keycloak Login Screen"
@@ -17,6 +17,7 @@ dependencies:
   flutter_appauth: ^9.0.1
   flutter_secure_storage: ^9.2.4
   shared_preferences: ^2.5.3
+  synchronized: ^3.1.0
 
 dev_dependencies:
   flutter_test:
