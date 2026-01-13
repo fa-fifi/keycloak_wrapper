@@ -98,7 +98,7 @@ class KeycloakWrapper {
   /// Logs the user in.
   ///
   /// Returns true if login is successful.
-  Future<bool> login() async {
+  Future<bool> signin() async {
     _assertInitialization();
     try {
       tokenResponse = await _appAuth.authorizeAndExchangeCode(
@@ -136,7 +136,7 @@ class KeycloakWrapper {
   /// Logs the user out.
   ///
   /// Returns true if logout is successful.
-  Future<bool> logout() async {
+  Future<bool> signout() async {
     _assertInitialization();
     try {
       final request = EndSessionRequest(

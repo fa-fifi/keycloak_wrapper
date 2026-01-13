@@ -1,0 +1,4 @@
+ignore-paths:
+  - lib/**
+commit-message:
+      prefix: "⬆️ "
