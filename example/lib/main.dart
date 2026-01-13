@@ -61,7 +61,7 @@ class LoginScreen extends StatelessWidget {
   // Login using the given configuration.
   Future<void> login() async {
     // Check if user has successfully logged in.
-    final isLoggedIn = await keycloakWrapper.login();
+    final isLoggedIn = await keycloakWrapper.signin();
 
     if (isLoggedIn) debugPrint('User has successfully logged in.');
   }
@@ -80,7 +80,7 @@ class HomeScreen extends StatelessWidget {
   // Logout from the current realm.
   Future<void> logout() async {
     // Check if user has successfully logged out.
-    final isLoggedOut = await keycloakWrapper.logout();
+    final isLoggedOut = await keycloakWrapper.signout();
 
     if (isLoggedOut) debugPrint('User has successfully logged out.');
   }
