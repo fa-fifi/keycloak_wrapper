@@ -110,6 +110,7 @@ class KeycloakWrapper {
           promptValues: ['login'],
           allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
           clientSecret: _keycloakConfig.clientSecret,
+          externalUserAgent: _keycloakConfig.externalUserAgent,
         ),
       );
 
@@ -144,6 +145,7 @@ class KeycloakWrapper {
         issuer: _keycloakConfig.issuer,
         postLogoutRedirectUrl: _keycloakConfig.redirectUri,
         allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+        externalUserAgent: _keycloakConfig.externalUserAgent,
       );
 
       await _appAuth.endSession(request);
