@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:synchronized/synchronized.dart';
 
 part 'src/config.dart';
 part 'src/constants.dart';
