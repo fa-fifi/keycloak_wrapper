@@ -111,7 +111,7 @@ Next, create a button somewhere in your login screen and use the following metho
 
 ```dart
 Future<void> login() async {
-  final isLoggedIn = await keycloakWrapper.login();
+  final isLoggedIn = await keycloakWrapper.signin();
 }
 ```
 
@@ -134,7 +134,7 @@ To log out, simply call the following method. Make sure to pop all stacked scree
 
 ```dart
 Future<void> logout() async {
-  final isLoggedOut = await keycloakWrapper.logout();
+  final isLoggedOut = await keycloakWrapper.signout();
 }
 ```
 
