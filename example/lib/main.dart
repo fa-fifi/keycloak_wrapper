@@ -10,9 +10,9 @@ void main() {
   keycloakWrapper.initialize(
     config: KeycloakConfig(
       bundleIdentifier: 'com.example.demo',
-      clientId: 'veins-demo',
-      frontendUrl: 'https://sso.tmrnd.com.my',
-      realm: 'demo-app',
+      clientId: 'myclient',
+      frontendUrl: 'http://10.0.2.2:8080',
+      realm: 'myrealm',
     ),
   );
   // Listen to the errors caught by the plugin.
