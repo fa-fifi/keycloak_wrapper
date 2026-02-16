@@ -69,23 +69,26 @@ Specify the custom scheme in your iOS/macOS app’s `Info.plist` file. There sho
 Create an instance of the `KeycloakWrapper` class somewhere in your code, as shown below. Make sure to replace all placeholders with your own configuration values.
 
 ```dart
-final keycloakConfig = KeycloakConfig(
-  bundleIdentifier: '<bundle_identifier>',
-  clientId: '<client_id>',
-  frontendUrl: '<frontend_url>',
-  realm: '<realm>',
-);
+final keycloakWrapper = KeycloakWrapper();
 
-final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
-```
-
-Initialize the package within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
-
-```dart
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  keycloakWrapper.initialize();
-  ...
+  // Initialize the plugin at the start of your app.
+  keycloakWrapper.initialize(
+    config: KeycloakConfig(
+      bundleIdentifier: '<bundle_identifier>',
+      clientId: '<client_id>',
+      frontendUrl: '<frontend_url>',
+      realm: '<realm>',
+    ),
+  );
+  // Listen to the errors caught by the plugin.
+  keycloakWrapper.onError = (message, error, stackTrace) {
+    // Display the error message inside a snackbar.
+    scaffoldMessengerKey.currentState
+      ?..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  };
   runApp(const MyApp());
 }
 ```
