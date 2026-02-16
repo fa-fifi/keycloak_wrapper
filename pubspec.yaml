@@ -3,9 +3,11 @@ description: Keycloak Single Sign-On (SSO) authentication package for Flutter fr
 version: 1.4.6
 repository: https://github.com/fa-fifi/keycloak_wrapper
 screenshots:
-  - description: "Default Keycloak Login Screen"
-    path: screenshots/login-screen.png
-topics: [ authentication, keycloak, oauth2, openidconnect ]
+  - description: "http://localhost:8080/realms/myrealm/account"
+    path: screenshots/keycloak-account-console.png
+  - description: "http://localhost:8080/admin"
+    path: screenshots/keycloak-admin-console.png
+topics: [authentication, keycloak, oauth2, openidconnect]
 
 environment:
   sdk: ^3.6.0
@@ -14,9 +16,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_appauth: ^9.0.1
-  flutter_secure_storage: ^9.2.4
-  shared_preferences: ^2.5.3
+  flutter_appauth: ^11.0.0
+  flutter_secure_storage: ^10.0.0
+  shared_preferences: ^2.5.4
 
 dev_dependencies:
   flutter_test:

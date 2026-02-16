@@ -18,7 +18,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - postgres
     command: start-dev

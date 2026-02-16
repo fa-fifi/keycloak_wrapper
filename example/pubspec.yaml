@@ -1,20 +1,20 @@
 name: example
-description: A new Flutter project.
+description: A fully working sample app for demonstrating the functionalities of the keycloak_wrapper package.
 publish_to: none
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
     sdk: flutter
   keycloak_wrapper:
     path: ../
-  shared_preferences: ^2.5.3
+    version: 1.4.6
 
 dev_dependencies:
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   integration_test:

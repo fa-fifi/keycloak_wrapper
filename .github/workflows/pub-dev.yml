@@ -4,7 +4,7 @@ on:
   push:
     branches: main
     paths: CHANGELOG.md
-    
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -13,7 +13,8 @@ jobs:
       success: ${{ steps.package.outputs.success }}
       version: ${{ steps.package.outputs.localVersion }}
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
       - name: Publish package
         id: package
         uses: k-paxian/dart-package-publisher@master
@@ -31,10 +32,11 @@ jobs:
     needs: publish
     if: needs.publish.outputs.success == 'true' && !contains(needs.publish.outputs.version, '-')
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
       - name: Extract release notes
         id: release-notes
-        uses: ffurrer2/extract-release-notes@v2
+        uses: ffurrer2/extract-release-notes@v3.0.0
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -12,6 +12,8 @@ class KeycloakWrapper {
 
   Timer? _refreshTimer;
 
+  TokenResponse? _tokenResponse;
+
   late final _streamController = StreamController<bool>.broadcast();
 
   /// Called whenever an error gets caught.
@@ -20,13 +22,10 @@ class KeycloakWrapper {
   void Function(String message, Object error, StackTrace stackTrace) onError =
       (message, error, stackTrace) => developer.log(
             message,
-            name: 'keycloak_wrapper',
+            name: _packageName,
             error: error,
             stackTrace: stackTrace,
           );
-
-  /// The details from making a successful token exchange.
-  TokenResponse? tokenResponse;
 
   factory KeycloakWrapper() => _instance ??= KeycloakWrapper._();
 
@@ -34,122 +33,151 @@ class KeycloakWrapper {
 
   /// Returns the access token string.
   ///
-  /// To get the payload, do `JWT.decode(keycloakWrapper.accessToken).payload`.
-  String? get accessToken => tokenResponse?.accessToken;
+  /// To get the payload, use `JWT.decode(keycloakWrapper.accessToken).payload`.
+  String? get accessToken => _tokenResponse?.accessToken;
 
   /// The stream of the user authentication state.
   ///
-  /// Returns true if the user is currently logged in.
+  /// Emits `true` when the user is authenticated, `false` otherwise.
   Stream<bool> get authenticationStream => _streamController.stream;
 
-  /// Returns the id token string.
+  /// Returns the ID token string.
   ///
-  /// To get the payload, do `JWT.decode(keycloakWrapper.idToken).payload`.
-  String? get idToken => tokenResponse?.idToken;
+  /// To get the payload, use `JWT.decode(keycloakWrapper.idToken).payload`.
+  String? get idToken => _tokenResponse?.idToken;
 
   /// Whether this package has been initialized.
   bool get isInitialized => _isInitialized;
 
   /// Returns the refresh token string.
   ///
-  /// To get the payload, do `JWT.decode(keycloakWrapper.refreshToken).payload`.
-  String? get refreshToken => tokenResponse?.refreshToken;
+  /// To get the payload, use `JWT.decode(keycloakWrapper.refreshToken).payload`.
+  String? get refreshToken => _tokenResponse?.refreshToken;
 
-  /// Requests a new access token if it expires within the given duration.
+  /// Disposes of resources used by this wrapper.
+  ///
+  /// Should be called when the wrapper is no longer needed.
+  void dispose() {
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
+    _streamController.close();
+    _instance = null;
+  }
+
+  /// Exchanges the refresh token for new access and ID tokens.
+  ///
+  /// If [duration] is provided, only refreshes if the refresh token will
+  /// expire within that duration.
   Future<void> exchangeTokens([Duration? duration]) async {
-    final securedRefreshToken =
-        await _secureStorage.read(key: _refreshTokenKey);
+    try {
+      final securedRefreshToken =
+          await _secureStorage.read(key: _refreshTokenKey);
 
-    if (securedRefreshToken == null) {
-      developer.log('No refresh token found.', name: 'keycloak_wrapper');
-      _streamController.add(false);
-    } else if (JWT
-        .decode(securedRefreshToken)
-        .willExpired(duration ?? Duration.zero)) {
-      developer.log('Expired refresh token', name: 'keycloak_wrapper');
-      _streamController.add(false);
-    } else {
-      final isConnected = await hasNetwork();
-
-      if (isConnected) {
-        tokenResponse = await _appAuth.token(
-          TokenRequest(
-            _keycloakConfig.clientId,
-            _keycloakConfig.redirectUri,
-            issuer: _keycloakConfig.issuer,
-            scopes: _keycloakConfig.scopes,
-            refreshToken: securedRefreshToken,
-            allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
-            clientSecret: _keycloakConfig.clientSecret,
-          ),
-        );
-
-        if (tokenResponse.isValid) {
-          if (refreshToken != null) {
-            await _secureStorage.write(
-              key: _refreshTokenKey,
-              value: refreshToken,
-            );
-          }
-          _onTokenUpdated();
-        } else {
-          developer.log('Invalid token response.', name: 'keycloak_wrapper');
-        }
-
-        _streamController.add(tokenResponse.isValid);
+      if (securedRefreshToken == null) {
+        developer.log('No refresh token found.', name: _packageName);
+        _streamController.add(false);
+      } else if (JWT
+          .decode(securedRefreshToken)
+          .hasExpired(duration ?? Duration.zero)) {
+        developer.log('Refresh token expired.', name: _packageName);
+        _streamController.add(false);
       } else {
-        developer.log('No internet connection.', name: 'keycloak_wrapper');
-        _streamController.add(true);
+        final isConnected = await hasNetwork();
+
+        if (isConnected) {
+          _tokenResponse = await _appAuth.token(
+            TokenRequest(
+              _keycloakConfig.clientId,
+              _keycloakConfig.redirectUri,
+              issuer: _keycloakConfig.issuer,
+              scopes: _keycloakConfig.scopes,
+              refreshToken: securedRefreshToken,
+              allowInsecureConnections:
+                  _keycloakConfig.allowInsecureConnections,
+              clientSecret: _keycloakConfig.clientSecret,
+            ),
+          );
+
+          if (_tokenResponse.isValid) {
+            if (refreshToken != null) {
+              await _secureStorage.write(
+                key: _refreshTokenKey,
+                value: refreshToken,
+              );
+            }
+            _onTokenUpdated();
+          } else {
+            developer.log('Invalid token response.', name: _packageName);
+          }
+
+          _streamController.add(_tokenResponse.isValid);
+        } else {
+          developer.log('No internet connection.', name: _packageName);
+          _streamController.add(true); // Still authenticated, just offline.
+        }
       }
+    } catch (e, s) {
+      _handleError('Failed to exchange tokens.', e, s);
+      _streamController.add(false);
     }
   }
 
-  /// Retrieves the current user information.
+  /// Retrieves the current user information from Keycloak.
+  ///
+  /// Returns a map containing user profile data, or `null` if the request fails.
   Future<Map<String, dynamic>?> getUserInfo() async {
     _assertInitialization();
+    final client = HttpClient();
+
     try {
       final url = Uri.parse(_keycloakConfig.userInfoEndpoint);
-      final client = HttpClient();
       final request = await client.getUrl(url)
         ..headers.add(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
 
-      client.close();
       return jsonDecode(responseBody) as Map<String, dynamic>?;
     } catch (e, s) {
       _handleError('Failed to fetch user info.', e, s);
       return null;
+    } finally {
+      client.close();
     }
   }
 
-  /// Initializes the user authentication state and refreshes the token.
+  /// Initializes the Keycloak wrapper with the provided configuration.
+  ///
+  /// Must be called before any other methods. Automatically attempts to
+  /// restore the user's session if a valid refresh token exists.
   Future<void> initialize({required KeycloakConfig config}) async {
     _keycloakConfig = config;
-    final prefs = SharedPreferencesAsync();
-    final hasRunBefore = await prefs.getBool(_hasRunBeforeKey) ?? false;
-
-    if (!hasRunBefore) {
-      _secureStorage.deleteAll();
-      prefs.setBool(_hasRunBeforeKey, true);
-    }
 
     try {
+      final prefs = SharedPreferencesAsync();
+      final hasRunBefore = await prefs.getBool(_hasRunBeforeKey) ?? false;
+
+      if (!hasRunBefore) {
+        _secureStorage.deleteAll();
+        prefs.setBool(_hasRunBeforeKey, true);
+      }
+
       _isInitialized = true;
       await exchangeTokens();
     } catch (e, s) {
       _isInitialized = false;
       _handleError('Failed to initialize plugin.', e, s);
+      rethrow; // Let caller know initialization failed.
     }
   }
 
   /// Logs the user in.
   ///
-  /// Returns true if login is successful.
+  /// Returns `true` if login is successful, `false` otherwise.
   Future<bool> login() async {
     _assertInitialization();
+
     try {
-      tokenResponse = await _appAuth.authorizeAndExchangeCode(
+      _tokenResponse = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
           _keycloakConfig.clientId,
           _keycloakConfig.redirectUri,
@@ -161,7 +189,7 @@ class KeycloakWrapper {
         ),
       );
 
-      if (tokenResponse.isValid) {
+      if (_tokenResponse.isValid) {
         if (refreshToken != null) {
           await _secureStorage.write(
             key: _refreshTokenKey,
@@ -170,11 +198,11 @@ class KeycloakWrapper {
         }
         _onTokenUpdated();
       } else {
-        developer.log('Invalid token response.', name: 'keycloak_wrapper');
+        developer.log('Invalid token response.', name: _packageName);
       }
 
-      _streamController.add(tokenResponse.isValid);
-      return tokenResponse.isValid;
+      _streamController.add(_tokenResponse.isValid);
+      return _tokenResponse.isValid;
     } catch (e, s) {
       _handleError('Failed to login.', e, s);
       return false;
@@ -183,9 +211,10 @@ class KeycloakWrapper {
 
   /// Logs the user out.
   ///
-  /// Returns true if logout is successful.
+  /// Returns `true` if logout is successful, `false` otherwise.
   Future<bool> logout() async {
     _assertInitialization();
+
     try {
       final request = EndSessionRequest(
         idTokenHint: idToken,
@@ -196,7 +225,7 @@ class KeycloakWrapper {
 
       await _appAuth.endSession(request);
       await _secureStorage.deleteAll();
-      tokenResponse = null;
+      _tokenResponse = null;
       _refreshTimer?.cancel();
       _refreshTimer = null;
       _streamController.add(false);
@@ -208,59 +237,67 @@ class KeycloakWrapper {
   }
 
   void _assertInitialization() {
-    assert(
-      _isInitialized,
-      'Make sure the package has been initialized prior to calling this method.',
-    );
+    if (!_isInitialized) {
+      throw StateError(
+        'Make sure the package has been initialized prior to calling this method.',
+      );
+    }
   }
 
   void _handleError(String message, Object error, StackTrace stackTrace) {
     onError.call(message, error, stackTrace);
 
-    if (error is PlatformException) {
-      if (error.code == 'token_failed') {
-        final prefs = SharedPreferencesAsync();
-        prefs.setBool(_hasRunBeforeKey, false);
-        initialize(config: _keycloakConfig);
-      }
+    if (error is PlatformException && error.code == 'token_failed') {
+      // Token exchange failed, reset and reinitialize.
+      final prefs = SharedPreferencesAsync();
+      prefs.setBool(_hasRunBeforeKey, false);
+      initialize(config: _keycloakConfig);
     }
   }
 
   void _onTokenUpdated() {
+    developer.log('Token updated.');
     _scheduleTokenRefresh();
   }
 
   void _scheduleTokenRefresh() {
     _refreshTimer?.cancel();
+    _refreshTimer = null;
 
-    if (!tokenResponse.isValid) return;
+    if (!_tokenResponse.isValid) return;
 
-    Duration? duration;
+    Duration? refreshDuration;
 
     if (accessToken != null) {
       final jwt = JWT.decode(accessToken!);
       final remainingTime = jwt.remainingTime;
+
       if (remainingTime != null && remainingTime.inSeconds > 0) {
+        // Refresh 1 minute before expiry, but at least 5 seconds from now
         final refreshIn = remainingTime - const Duration(minutes: 1);
-        duration = refreshIn > const Duration(seconds: 5)
+        refreshDuration = refreshIn > const Duration(seconds: 5)
             ? refreshIn
             : const Duration(seconds: 5);
       }
     }
 
-    if ((duration == null || duration.inSeconds <= 0) && refreshToken != null) {
+    if ((refreshDuration == null || refreshDuration.inSeconds <= 0) &&
+        refreshToken != null) {
       final jwt = JWT.decode(refreshToken!);
       final remainingTime = jwt.remainingTime;
+
       if (remainingTime != null && remainingTime.inSeconds > 0) {
-        duration = const Duration(seconds: 5);
+        // Refresh soon if we're relying on refresh token timing
+        refreshDuration = const Duration(seconds: 5);
       }
     }
 
-    if (duration == null) return;
+    if (refreshDuration == null) return;
 
-    _refreshTimer = Timer(duration, () async {
+    developer.log('refreshDuration $refreshDuration');
+
+    _refreshTimer = Timer(refreshDuration, () async {
       await exchangeTokens();
-      _scheduleTokenRefresh();
     });
   }
 }
