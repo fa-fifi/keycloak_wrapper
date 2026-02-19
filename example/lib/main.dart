@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:keycloak_wrapper/keycloak_wrapper.dart';
 
@@ -20,12 +21,14 @@ void main() {
     ),
   );
   // Listen to the errors caught by the plugin.
-  keycloakWrapper.onError = (message, _, _) {
-    // Display the error message inside a snackbar.
-    scaffoldMessengerKey.currentState
-      ?..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
-  };
+  if (kReleaseMode) {
+    keycloakWrapper.onError = (message, _, _) {
+      // Display the error message inside a snackbar.
+      scaffoldMessengerKey.currentState
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    };
+  }
   runApp(const MyApp());
 }
 

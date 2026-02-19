@@ -6,6 +6,8 @@ part of '../keycloak_wrapper.dart';
 class KeycloakWrapper {
   static KeycloakWrapper? _instance;
 
+  bool _isBusy = false;
+
   bool _isInitialized = false;
 
   late KeycloakConfig _keycloakConfig;
@@ -69,6 +71,12 @@ class KeycloakWrapper {
   /// If [duration] is provided, only refreshes if the refresh token will
   /// expire within that duration.
   Future<void> exchangeTokens([Duration? duration]) async {
+    if (_isBusy) {
+      developer.log('Token exchange already in progress, skipping.');
+      return;
+    }
+    _isBusy = true;
+
     try {
       final securedRefreshToken =
           await _secureStorage.read(key: _refreshTokenKey);
@@ -119,6 +127,8 @@ class KeycloakWrapper {
     } catch (e, s) {
       _handleError('Failed to exchange tokens.', e, s);
       _streamController.add(false);
+    } finally {
+      _isBusy = false;
     }
   }
 
@@ -176,6 +186,12 @@ class KeycloakWrapper {
   Future<bool> login() async {
     _assertInitialization();
 
+    if (_isBusy) {
+      developer.log('User login already in progress, skipping.');
+      return false;
+    }
+    _isBusy = true;
+
     try {
       _tokenResponse = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -206,6 +222,8 @@ class KeycloakWrapper {
     } catch (e, s) {
       _handleError('Failed to login.', e, s);
       return false;
+    } finally {
+      _isBusy = false;
     }
   }
 
@@ -214,6 +232,12 @@ class KeycloakWrapper {
   /// Returns `true` if logout is successful, `false` otherwise.
   Future<bool> logout() async {
     _assertInitialization();
+
+    if (_isBusy) {
+      developer.log('User logout already in progress, skipping.');
+      return false;
+    }
+    _isBusy = true;
 
     try {
       final request = EndSessionRequest(
@@ -233,6 +257,8 @@ class KeycloakWrapper {
     } catch (e, s) {
       _handleError('Failed to logout.', e, s);
       return false;
+    } finally {
+      _isBusy = false;
     }
   }
 
