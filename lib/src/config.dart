@@ -16,13 +16,14 @@ class KeycloakConfig {
   /// The realm name.
   final String realm;
 
-  /// The optional scope values that are used to request claims.
-  final List<String>? additionalScopes;
-
   /// The client's password to prove its identity to the Keycloak server.
   final String? clientSecret;
 
-  final bool _allowInsecureConnections;
+  /// The optional scope values that are used to request claims.
+  final List<String>? _additionalScopes;
+
+  /// Whether non-HTTPS endpoints are allowed or not.
+  final bool allowInsecureConnections;
 
   final ExternalUserAgent _externalUserAgent;
 
@@ -31,11 +32,14 @@ class KeycloakConfig {
     required this.clientId,
     required this.frontendUrl,
     required this.realm,
-    this.additionalScopes,
     this.clientSecret,
+    List<String>? additionalScopes,
     bool? allowInsecureConnections,
     ExternalUserAgent? externalUserAgent,
-  })  : _allowInsecureConnections =
+  })  : _additionalScopes = additionalScopes != null
+            ? List.unmodifiable(additionalScopes)
+            : null,
+        allowInsecureConnections =
             allowInsecureConnections ?? !frontendUrl.startsWith('https://'),
         _externalUserAgent =
             externalUserAgent ?? ExternalUserAgent.asWebAuthenticationSession,
@@ -44,13 +48,10 @@ class KeycloakConfig {
               .hasMatch(bundleIdentifier),
           'Invalid bundle identifier: must be a valid hostname (no spaces, underscores, etc.).',
         );
-
-  /// Whether non-HTTPS endpoints are allowed or not.
-  bool get allowInsecureConnections => _allowInsecureConnections;
-
+  
   /// The external user-agent to use on iOS and macOS.
   ExternalUserAgent get externalUserAgent => _externalUserAgent;
-
+  
   /// The base URI for the authorization server.
   String get issuer => '$frontendUrl/realms/$realm';
 
@@ -58,9 +59,9 @@ class KeycloakConfig {
   String get redirectUri => '$bundleIdentifier://login-callback';
 
   /// The identifier for resources that the client wants to access.
-  List<String> get scopes => List.from(<String>{
+  List<String> get scopes => List.unmodifiable(<String>{
         'openid',
-        ...?additionalScopes,
+        ...?_additionalScopes,
       });
 
   /// The user information endpoint to retrieve user profile data using a valid access token.
