@@ -79,30 +79,6 @@ final keycloakConfig = KeycloakConfig(
 final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
 ```
 
-### iOS/macOS Authentication Options
-
-For iOS and macOS platforms, you can customize the authentication user-agent by specifying the `externalUserAgent` parameter:
-
-```dart
-import 'package:keycloak_wrapper/keycloak_wrapper.dart';
-
-final keycloakConfig = KeycloakConfig(
-  bundleIdentifier: '<bundle_identifier>',
-  clientId: '<client_id>',
-  frontendUrl: '<frontend_url>',
-  realm: '<realm>',
-  externalUserAgent: ExternalUserAgent.ephemeralAsWebAuthenticationSession,
-);
-```
-
-Available options:
-- `ExternalUserAgent.asWebAuthenticationSession` (default): Uses ASWebAuthenticationSession APIs, providing the best user-agent based on OS version
-- `ExternalUserAgent.ephemeralAsWebAuthenticationSession`: Uses ephemeral sessions that don't share browser data with the user's normal browser session
-- `ExternalUserAgent.sfSafariViewController`: Uses SFSafariViewController, useful for avoiding system prompts during logout flows
-
-> [!NOTE]
-> The `externalUserAgent` parameter only affects iOS and macOS platforms. It is automatically ignored on Android.
-
 Initialize the package within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
 
 ```dart

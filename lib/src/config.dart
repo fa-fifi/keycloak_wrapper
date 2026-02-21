@@ -25,7 +25,8 @@ class KeycloakConfig {
   /// Whether non-HTTPS endpoints are allowed or not.
   final bool allowInsecureConnections;
 
-  final ExternalUserAgent _externalUserAgent;
+  /// The external user-agent to use on iOS and macOS.
+  final ExternalUserAgent externalUserAgent;
 
   KeycloakConfig({
     required this.bundleIdentifier,
@@ -35,23 +36,18 @@ class KeycloakConfig {
     this.clientSecret,
     List<String>? additionalScopes,
     bool? allowInsecureConnections,
-    ExternalUserAgent? externalUserAgent,
+    this.externalUserAgent = ExternalUserAgent.asWebAuthenticationSession,
   })  : _additionalScopes = additionalScopes != null
             ? List.unmodifiable(additionalScopes)
             : null,
         allowInsecureConnections =
             allowInsecureConnections ?? !frontendUrl.startsWith('https://'),
-        _externalUserAgent =
-            externalUserAgent ?? ExternalUserAgent.asWebAuthenticationSession,
         assert(
           RegExp(r'^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*$')
               .hasMatch(bundleIdentifier),
           'Invalid bundle identifier: must be a valid hostname (no spaces, underscores, etc.).',
         );
-  
-  /// The external user-agent to use on iOS and macOS.
-  ExternalUserAgent get externalUserAgent => _externalUserAgent;
-  
+
   /// The base URI for the authorization server.
   String get issuer => '$frontendUrl/realms/$realm';
 

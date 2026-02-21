@@ -93,18 +93,17 @@ class KeycloakWrapper {
         final isConnected = await hasNetwork();
 
         if (isConnected) {
-          _tokenResponse = await _appAuth.token(
-            TokenRequest(
-              _keycloakConfig.clientId,
-              _keycloakConfig.redirectUri,
-              issuer: _keycloakConfig.issuer,
-              scopes: _keycloakConfig.scopes,
-              refreshToken: securedRefreshToken,
-              allowInsecureConnections:
-                  _keycloakConfig.allowInsecureConnections,
-              clientSecret: _keycloakConfig.clientSecret,
-            ),
+          final request = TokenRequest(
+            _keycloakConfig.clientId,
+            _keycloakConfig.redirectUri,
+            issuer: _keycloakConfig.issuer,
+            scopes: _keycloakConfig.scopes,
+            refreshToken: securedRefreshToken,
+            allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+            clientSecret: _keycloakConfig.clientSecret,
           );
+
+          _tokenResponse = await _appAuth.token(request);
 
           if (_tokenResponse.isValid) {
             if (refreshToken != null) {
@@ -193,18 +192,18 @@ class KeycloakWrapper {
     _isBusy = true;
 
     try {
-      _tokenResponse = await _appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          _keycloakConfig.clientId,
-          _keycloakConfig.redirectUri,
-          issuer: _keycloakConfig.issuer,
-          scopes: _keycloakConfig.scopes,
-          promptValues: ['login'],
-          allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
-          clientSecret: _keycloakConfig.clientSecret,
-          externalUserAgent: _keycloakConfig.externalUserAgent,
-        ),
+      final request = AuthorizationTokenRequest(
+        _keycloakConfig.clientId,
+        _keycloakConfig.redirectUri,
+        issuer: _keycloakConfig.issuer,
+        scopes: _keycloakConfig.scopes,
+        promptValues: ['login'],
+        allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
+        clientSecret: _keycloakConfig.clientSecret,
+        externalUserAgent: _keycloakConfig.externalUserAgent,
       );
+
+      _tokenResponse = await _appAuth.authorizeAndExchangeCode(request);
 
       if (_tokenResponse.isValid) {
         if (refreshToken != null) {

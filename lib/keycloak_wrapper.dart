@@ -11,8 +11,7 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-export 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart'
-    show ExternalUserAgent;
+export 'package:flutter_appauth/flutter_appauth.dart' show ExternalUserAgent;
 
 part 'src/config.dart';
 part 'src/constants.dart';
