@@ -25,6 +25,9 @@ class KeycloakConfig {
   /// Whether non-HTTPS endpoints are allowed or not.
   final bool allowInsecureConnections;
 
+  /// The external user-agent to use on iOS and macOS.
+  final ExternalUserAgent externalUserAgent;
+
   KeycloakConfig({
     required this.bundleIdentifier,
     required this.clientId,
@@ -33,6 +36,7 @@ class KeycloakConfig {
     this.clientSecret,
     List<String>? additionalScopes,
     bool? allowInsecureConnections,
+    this.externalUserAgent = ExternalUserAgent.asWebAuthenticationSession,
   })  : _additionalScopes = additionalScopes != null
             ? List.unmodifiable(additionalScopes)
             : null,
