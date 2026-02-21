@@ -132,7 +132,7 @@ class KeycloakWrapper {
     }
   }
 
-  /// Retrieves the current user information from Keycloak.
+  /// Retrieves the current user information from Keycloak server.
   ///
   /// Returns a map containing user profile data, or `null` if the request fails.
   Future<Map<String, dynamic>?> getUserInfo() async {
@@ -154,6 +154,12 @@ class KeycloakWrapper {
       client.close();
     }
   }
+
+  /// Retrieves the current user information when offline.
+  ///
+  /// Returns the decoded payload of the stored access token.
+  Map<String, dynamic>? getCachedUserInfo() =>
+      accessToken == null ? null : JWT.decode(accessToken!).payload;
 
   /// Initializes the plugin with the provided configuration.
   ///
