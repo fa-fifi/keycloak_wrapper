@@ -56,9 +56,9 @@ class KeycloakWrapper {
   /// To get the payload, use `JWT.decode(keycloakWrapper.refreshToken).payload`.
   String? get refreshToken => _tokenResponse?.refreshToken;
 
-  /// Disposes of resources used by this wrapper.
+  /// Disposes of resources used by this plugin.
   ///
-  /// Should be called when the wrapper is no longer needed.
+  /// Should be called when the plugin is no longer needed.
   void dispose() {
     _refreshTimer?.cancel();
     _refreshTimer = null;
@@ -72,7 +72,8 @@ class KeycloakWrapper {
   /// expire within that duration.
   Future<void> exchangeTokens([Duration? duration]) async {
     if (_isBusy) {
-      developer.log('Token exchange already in progress, skipping.');
+      developer.log('Token exchange already in progress, skipping.',
+          name: _packageName);
       return;
     }
     _isBusy = true;
@@ -154,7 +155,7 @@ class KeycloakWrapper {
     }
   }
 
-  /// Initializes the Keycloak wrapper with the provided configuration.
+  /// Initializes the plugin with the provided configuration.
   ///
   /// Must be called before any other methods. Automatically attempts to
   /// restore the user's session if a valid refresh token exists.
@@ -186,7 +187,8 @@ class KeycloakWrapper {
     _assertInitialization();
 
     if (_isBusy) {
-      developer.log('User login already in progress, skipping.');
+      developer.log('User login already in progress, skipping.',
+          name: _packageName);
       return false;
     }
     _isBusy = true;
@@ -234,7 +236,8 @@ class KeycloakWrapper {
     _assertInitialization();
 
     if (_isBusy) {
-      developer.log('User logout already in progress, skipping.');
+      developer.log('User logout already in progress, skipping.',
+          name: _packageName);
       return false;
     }
     _isBusy = true;
@@ -283,7 +286,6 @@ class KeycloakWrapper {
   }
 
   void _onTokenUpdated() {
-    developer.log('Token updated.');
     _scheduleTokenRefresh();
   }
 
@@ -320,8 +322,6 @@ class KeycloakWrapper {
     }
 
     if (refreshDuration == null) return;
-
-    developer.log('refreshDuration $refreshDuration');
 
     _refreshTimer = Timer(refreshDuration, () async {
       await exchangeTokens();
