@@ -74,6 +74,10 @@ final keycloakConfig = KeycloakConfig(
   clientId: '<client_id>',
   frontendUrl: '<frontend_url>',
   realm: '<realm>',
+  // Optional: For iOS/macOS, specify the external user agent.
+  // externalUserAgent: ExternalUserAgent.asWebAuthenticationSession, // default
+  // externalUserAgent: ExternalUserAgent.ephemeralAsWebAuthenticationSession,
+  // externalUserAgent: ExternalUserAgent.sfSafariViewController,
 );
 
 final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
@@ -153,7 +157,7 @@ You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example
 Contributions are welcome! However, please make sure to follow the guidelines below to avoid unnecessary waste of time and resources.
 
 - **Found a bug?**  
-  Ensure the bug has not already been reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak_wrapper/issues). If you can't find an open issue addressing the problem, open a new one. Be sure to include a title, a clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+  Ensure the bug has not already been reported by searching on GitHub under [Issues](https://github.com/fa-fifi/keycloak_wrapper/issues). If you can't find an open issue addressing the problem, open a new one. Be sure to include a title, a clear description, much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
 - **Need some help?**  
   Feel free to open a new [discussion](https://github.com/fa-fifi/keycloak_wrapper/discussions) on GitHub if you need help from the community. I'll try my best to help you as soon as possible. If you want to make any feature requests, you can use the same platform for us to discuss your idea further.
