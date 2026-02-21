@@ -60,7 +60,7 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: CircularProgressIndicator.adaptive()));
+      const Scaffold(body: Center(child: CircularProgressIndicator()));
 }
 
 class LoginScreen extends StatefulWidget {
@@ -84,13 +84,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: Center(
-      child: isLoading
-          ? CircularProgressIndicator()
-          : FilledButton(onPressed: login, child: const Text('Login')),
-    ),
-  );
+  Widget build(BuildContext context) => isLoading
+      ? LoadingScreen()
+      : Scaffold(
+          body: Center(
+            child: FilledButton(onPressed: login, child: const Text('Login')),
+          ),
+        );
 }
 
 class HomeScreen extends StatefulWidget {
@@ -114,29 +114,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FutureBuilder(
-            // Retrieve the user information.
-            future: keycloakWrapper.getUserInfo(),
-            builder: (context, snapshot) {
-              final userInfo = snapshot.data ?? {};
+  Widget build(BuildContext context) => isLoading
+      ? LoadingScreen()
+      : Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FutureBuilder(
+                  // Retrieve the user information.
+                  future: keycloakWrapper.getUserInfo(),
+                  builder: (context, snapshot) {
+                    final userInfo = snapshot.data ?? {};
 
-              // Display the retrieved user information.
-              return Column(
-                children: [
-                  ...userInfo.entries.map((n) => Text('${n.key}: ${n.value}')),
-                  if (userInfo.isNotEmpty) const SizedBox(height: 20),
-                ],
-              );
-            },
+                    // Display the retrieved user information.
+                    return Column(
+                      children: [
+                        ...userInfo.entries.map(
+                          (n) => Text('${n.key}: ${n.value}'),
+                        ),
+                        if (userInfo.isNotEmpty) const SizedBox(height: 20),
+                      ],
+                    );
+                  },
+                ),
+                FilledButton(onPressed: logout, child: const Text('Logout')),
+              ],
+            ),
           ),
-          FilledButton(onPressed: logout, child: const Text('Logout')),
-        ],
-      ),
-    ),
-  );
+        );
 }
