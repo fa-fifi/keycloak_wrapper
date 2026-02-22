@@ -132,9 +132,10 @@ class KeycloakWrapper {
     }
   }
 
-  /// Retrieves the current user information from Keycloak.
+  /// Retrieves the current user information from Keycloak server.
   ///
-  /// Returns a map containing user profile data, or `null` if the request fails.
+  /// Returns the decoded payload of the stored access token if the request
+  /// fails or offline.
   Future<Map<String, dynamic>?> getUserInfo() async {
     _assertInitialization();
     final client = HttpClient();
@@ -149,7 +150,7 @@ class KeycloakWrapper {
       return jsonDecode(responseBody) as Map<String, dynamic>?;
     } catch (e, s) {
       _handleError('Failed to fetch user info.', e, s);
-      return null;
+      return accessToken == null ? null : JWT.decode(accessToken!).payload;
     } finally {
       client.close();
     }
