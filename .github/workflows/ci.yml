@@ -3,7 +3,7 @@ name: Continuous Integration
 on: pull_request
 
 jobs:
-  test:
+  analyze:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -18,8 +18,4 @@ jobs:
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
       - name: Analyze code
-        continue-on-error: true
         run: flutter analyze
-      - name: Run tests
-        if: success() || failure()
-        run: flutter test

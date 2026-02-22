@@ -135,7 +135,7 @@ class KeycloakWrapper {
   /// Retrieves the current user information from Keycloak server.
   ///
   /// Returns the decoded payload of the stored access token if the request
-  /// fails or offline.
+  /// fails or is offline.
   Future<Map<String, dynamic>?> getUserInfo() async {
     _assertInitialization();
     final client = HttpClient();
@@ -303,7 +303,7 @@ class KeycloakWrapper {
       final remainingTime = jwt.remainingTime;
 
       if (remainingTime != null && remainingTime.inSeconds > 0) {
-        // Refresh 1 minute before expiry, but at least 5 seconds from now
+        // Refresh 1 minute before expiry, but at least 5 seconds from now.
         final refreshIn = remainingTime - const Duration(minutes: 1);
         refreshDuration = refreshIn > const Duration(seconds: 5)
             ? refreshIn
@@ -317,7 +317,7 @@ class KeycloakWrapper {
       final remainingTime = jwt.remainingTime;
 
       if (remainingTime != null && remainingTime.inSeconds > 0) {
-        // Refresh soon if we're relying on refresh token timing
+        // Refresh soon if we're relying on refresh token timing.
         refreshDuration = const Duration(seconds: 5);
       }
     }
