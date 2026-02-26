@@ -66,31 +66,31 @@ Specify the custom scheme in your iOS/macOS app’s `Info.plist` file. There sho
 ```
 
 ## Usage
-Create an instance of the `KeycloakWrapper` class somewhere in your code, as shown below. Make sure to replace all placeholders with your own configuration values.
+First, create an instance of the plugin somewhere in your code.
 
 ```dart
-final keycloakConfig = KeycloakConfig(
-  bundleIdentifier: '<bundle_identifier>',
-  clientId: '<client_id>',
-  frontendUrl: '<frontend_url>',
-  realm: '<realm>',
-);
-
-final keycloakWrapper = KeycloakWrapper(config: keycloakConfig);
+final keycloakWrapper = KeycloakWrapper();
 ```
 
-Initialize the package within the `main()` method of your Flutter app to set up the user authentication stream as soon as your app launches.
+Next, initialize the plugin with your own configuration values within the `main()` method to set up the user authentication stream as soon as your app launches.
 
 ```dart
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  keycloakWrapper.initialize();
+  keycloakWrapper.initialize(
+    config: KeycloakConfig(
+      bundleIdentifier: '<bundle_identifier>',
+      clientId: '<client_id>',
+      frontendUrl: '<frontend_url>',
+      realm: '<realm>',
+    ),
+  );
   ...
   runApp(const MyApp());
 }
 ```
 
-To listen to the user authentication state stream, create a StreamBuilder widget that listens to `keycloakWrapper.authenticationStream`. Navigate the user to the login screen when the stream returns false, and redirect to the home screen when login is successful. Set the initial value of the StreamBuilder to `false` to ensure the stream never returns null.
+To listen to the user authentication state stream, create a StreamBuilder widget that listens to `keycloakWrapper.authenticationStream`. Navigate the user to the login screen when the stream returns `false`, and redirect to the home screen when login is successful. Set the initial value of the StreamBuilder to `false` to ensure the stream never returns null.
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -107,7 +107,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-Next, create a button somewhere in your login screen and use the following method to initiate the login process:
+Then create a button somewhere in your login screen and use the following method to initiate the login process:
 
 ```dart
 Future<void> login() async {
@@ -146,9 +146,9 @@ keycloakWrapper.onError = (message, error, stackTrace) {
 };
 ```
 
-You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this package works in a real-life app.
+For further customization, you can customize the optional parameters available inside the configuration. All shown above are only the mandatory ones. You can refer to the [example](https://pub.dev/packages/keycloak_wrapper/example) to see how this package works in a real-life app.
 
-## Contributing
+## Contribute
 
 Contributions are welcome! However, please make sure to follow the guidelines below to avoid unnecessary waste of time and resources.
 
