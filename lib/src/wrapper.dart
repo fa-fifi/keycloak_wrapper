@@ -183,8 +183,11 @@ class KeycloakWrapper {
 
   /// Logs the user in.
   ///
+  /// [loginHint] is an optional email (or username) to pre-fill in the
+  /// Keycloak login form.
+  ///
   /// Returns `true` if login is successful, `false` otherwise.
-  Future<bool> login() async {
+  Future<bool> login({String? loginHint}) async {
     _assertInitialization();
 
     if (_isBusy) {
@@ -201,6 +204,7 @@ class KeycloakWrapper {
         issuer: _keycloakConfig.issuer,
         scopes: _keycloakConfig.scopes,
         promptValues: ['login'],
+        loginHint: loginHint,
         allowInsecureConnections: _keycloakConfig.allowInsecureConnections,
         clientSecret: _keycloakConfig.clientSecret,
         externalUserAgent: _keycloakConfig.externalUserAgent,
