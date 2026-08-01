@@ -14,7 +14,7 @@ jobs:
       version: ${{ steps.package.outputs.localVersion }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       - name: Publish package
         id: package
         uses: k-paxian/dart-package-publisher@master
@@ -33,7 +33,7 @@ jobs:
     if: needs.publish.outputs.success == 'true' && !contains(needs.publish.outputs.version, '-')
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       - name: Extract release notes
         id: release-notes
         uses: ffurrer2/extract-release-notes@v3.1.0
