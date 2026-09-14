@@ -11,5 +11,3 @@ jobs:
     permissions:
       id-token: write
       pull-requests: write
-    with:
-      environment: "pub.dev"
