@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2026-09-14
+
+### Added
+- Add optional loginHint parameter to login method (#92). Thanks @FelipeQueFez for the PR.
+
+### Changed
+- Bump flutter_appauth from 11.0.0 to 12.0.0.
+- Migrate example app to built-in Kotlin.
+- Migrate example app to UIKit scene-based life cycle.
+
 ## [1.5.0] - 2026-02-26
 
 ### Added
