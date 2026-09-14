@@ -21,3 +21,5 @@ updates:
     commit-message:
       prefix: "⬆️ "
     versioning-strategy: increase
+    ignore:
+      - dependency-name: keycloak_wrapper
